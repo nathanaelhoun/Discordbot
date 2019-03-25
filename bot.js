@@ -8,7 +8,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 
 // Load the configs
-const auth = require("./auth.json");
+//const auth = require("./auth.json");
 let activityraw = fs.readFileSync("./activity.json");
 var activityfile = JSON.parse(activityraw);
 
