@@ -108,4 +108,4 @@ bot.on('message' , msg => {
 });
 
 //Use the token
-bot.login(auth.token);
+bot.login(process.env.BOT_TOKEN);
