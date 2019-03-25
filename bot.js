@@ -108,5 +108,5 @@ bot.on('message' , msg => {
 });
 
 //Use the token (Heroku or local)
-//bot.login(process.env.BOT_TOKEN);
-bot.login(auth.token);
+bot.login(process.env.BOT_TOKEN);
+//bot.login(auth.token);
