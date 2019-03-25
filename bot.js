@@ -1,12 +1,16 @@
 // Abdessamad discord bot
-// Created by Nathana�lhoun and supported by his wonderful classmates
+// Created by Nathanaëlhoun and supported by his wonderful classmates
 
 // Load the discord.js library
 const Discord = require('discord.js');
 
+// Load the fs filesystem library
+const fs = require('fs');
+
 // Load the configs
 const auth = require("./auth.json");
-
+let configraw = fs.readFileSync("./config.json");
+var config = JSON.parse(configraw);
 
 // ## Functions
 	// Delete the command message
@@ -30,7 +34,8 @@ const bot = new Discord.Client();
 // Launch the client
 bot.on('ready', () => {
 	console.log("Je suis vivant !");
-bot.user.setActivity("réparer son intérieur.");
+	bot.user.setActivity(config.activity);
+	console.log("Activité actuelle : "+config.activity);
 });
 
 // Message
@@ -43,20 +48,45 @@ bot.on('message' , msg => {
 		var text = msg.content.substring(1).split(' ');
 
 		//Get the command in lowercase
-		var cmd = text[0];
-		cmd = cmd.toLowerCase();
+		var command = text[0];
+		command = command.toLowerCase();
 
-		switch(cmd){
+		//Get the arguments of the command
+		if(text.length>1){
+			var arguments = []
+			for(var i=1 ; i<text.length ; i++){
+				arguments[i-1] = text[i];
+			}
+		}
+
+		//Detect the command and execute it
+		switch(command){
 
 			//help
 			case 'help' :
 				deleteMsg(msg);
 				sendMessage(msg,"Il n'y a aucune fonction intégrée pour l'instant...");
-				break;
+			break;
 
 			case 'ping' :
 				sendMessage(msg,"Pong !");
-				break;
+			break;
+
+			case 'setactivity' :
+				// Get the new activity
+				let newActivity = { 
+					"activity":""
+					};
+
+				for (var i = 0; i < arguments.length; i++) {
+                    newActivity.activity += arguments[i] + ' ';
+				}
+				
+				// Set and save the new activity in config.json
+				fs.writeFileSync("./config.json",JSON.stringify(newActivity));
+				bot.user.setActivity(newActivity.activity);
+				sendMessage(msg,"Je suis maintenant en train de jouer à **"+newActivity.activity+"** sur ordre de _"+msg.author.username+"_. ");
+			break;
 		}
 	}
 });
