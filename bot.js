@@ -287,7 +287,7 @@ bot.on('message' , msg => {
 //	Use the token (Heroku or local)
 // ---------------------------------
 
-//bot.login(process.env.BOT_TOKEN);
+bot.login(process.env.BOT_TOKEN);
 
-const auth = require("./auth.json");
-bot.login(auth.token);
+//const auth = require("./auth.json");
+//bot.login(auth.token);
