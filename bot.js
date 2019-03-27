@@ -146,7 +146,7 @@ bot.on('message' , msg => {
 			case 'help' :
 				deleteMessage(msg);
 				//Define the !help text
-				var helpText = "# Commandes actuelles : \n * !help pour obtenir de l'aide, \n * !ping pour jouer au tennis de table, \n * !setActivity [+texte] pour choisir l'activité du bot, \n * !hwShow pour montrer les devoirs à faire, \n * !hwClean pour supprimer les anciens devoirs, \n * !hwAdd [aaaammjj] [matière] [libellé] pour ajouter une date, \n * !hwDel [indice] pour supprimer un devoir (attention 1er indice = 0).  ";
+				var helpText = "# Commandes actuelles : \n * !help pour obtenir de l'aide, \n * !ping pour jouer au tennis de table, \n * !setActivity [+texte] pour choisir l'activité du bot, \n * !hwShow pour montrer les devoirs à faire, \n * !hwClean pour supprimer les anciens devoirs, \n * !hwAdd [aaaammjj] [matière] [libellé] pour ajouter une date, \n * !hwDel [indice] pour supprimer un devoir (attention 1er indice = 0). \n Vous pouvez afficher/ajouter des devoirs depuis une convo privée avec moi ! ";
 				sendMessage(msg,helpText);
 			break;
 
