@@ -7,6 +7,25 @@ const Discord = require('discord.js');
 // Load the fs filesystem library
 const fs = require('fs');
 
+// Load the database library and create the client
+// Using the Heroku PostGres database
+const { Client } = require('pg');
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
+
+client.connect();
+
+client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  client.end();
+});
+
 // Load the configs
 let activityraw = fs.readFileSync("./activity.json");
 var activityfile = JSON.parse(activityraw);
