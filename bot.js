@@ -23,7 +23,6 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
 	for (let row of res.rows) {
 		console.log(JSON.stringify(row));
 	}
-	client.end();
 });
 
 client.query('SELECT * FROM homework;', (err, homeworkRaw) => {
@@ -33,7 +32,6 @@ client.query('SELECT * FROM homework;', (err, homeworkRaw) => {
 		var homework = JSON.stringify(row);
 		homeworksText += "\n* " + homework2string(homework);
 	}
-	client.end();
 });
 
 // Load the configs
@@ -222,7 +220,6 @@ bot.on('message', msg => {
 						var homework = JSON.stringify(row);
 						homeworksText += "\n* " + homework2string(homework);
 					}
-					client.end();
 				});
 
 
@@ -327,3 +324,5 @@ bot.login(process.env.BOT_TOKEN);
 
 //const auth = require("./auth.json");
 //bot.login(auth.token);
+
+client.end();
