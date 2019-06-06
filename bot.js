@@ -26,6 +26,16 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
 	client.end();
 });
 
+client.query('SELECT * FROM homework;', (err, homeworkRaw) => {
+	if (err) throw err;
+	for (let row of homeworkRaw.rows) {
+		console.log(JSON.stringify(row));
+		var homework = JSON.stringify(row);
+		homeworksText += "\n* " + homework2string(homework);
+	}
+	client.end();
+});
+
 // Load the configs
 let activityraw = fs.readFileSync("./activity.json");
 var activityfile = JSON.parse(activityraw);
