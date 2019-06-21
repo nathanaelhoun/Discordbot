@@ -1,5 +1,6 @@
 // Abdessamad discord bot
-// Created by Nathanaëlhoun and supported by his wonderful classmates
+// Created by nathanaelhoun and supported by his wonderful classmates
+// @author Nathanaël Houn
 
 // Load the discord.js library
 const Discord = require('discord.js');
@@ -10,10 +11,6 @@ const fs = require('fs');
 // Load the database library and create the client
 // Using the Heroku PostGres database
 const { Pool, Client } = require('pg');
-
-// Load the configs
-let activityraw = fs.readFileSync("./activity.json");
-var activityfile = JSON.parse(activityraw);
 
 
 // ------------------------
@@ -36,6 +33,7 @@ function sendMessage(message, text) {
 }
 
 // Check that an yyyymmdd date is correct
+// @dateInt the date in an int form
 function isDateCorrect(dateInt) {
 	let year = Math.floor(dateInt / 10000);
 	dateInt = dateInt % 10000
@@ -74,6 +72,7 @@ function isDateCorrect(dateInt) {
 }
 
 // Get a string with good presentation from an homework object
+// @homework an homework JSON object with formatteddate, subject and description fields
 function homework2string(homework) {
 	return (homework.formateddate + " - **" + homework.subject + "** -  " + homework.description + " ");
 }
@@ -100,18 +99,27 @@ const dbClient = new Client({
 	ssl: true
 });
 
-
 // Launch the client and connecting it to the database
 bot.on('ready', () => {
 	console.log("Je suis vivant !");
-	bot.user.setActivity(activityfile.activity);
-	console.log("Activité actuelle : " + activityfile.activity);
-	now = new Date();
-	today = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+	var activity = "";
+
+	// Query the database for the actual activity of the bot
+	var sqlQuery = "SELECT * FROM activity ORDER BY id DESC";
+	dbClient.query(sqlQuery, (err, result) => {
+		if (err) throw err;
+
+		if (result.rows[0] != undefined) {
+			activity = result.rows[0].label;
+			bot.user.setActivity(activity);
+		}
+	})
+
+	console.log("Activité actuelle : " + activity);
 
 	dbClient.connect((err) => {
 		if (err) {
-			console.error('Connection à la base de données échouée :-(', err.stack)
+			console.error('Connection à la base de données échouée :-(', err.stack);
 		} else {
 			console.log('Connection à la base de données réussie ! ;-)');
 		}
@@ -162,27 +170,38 @@ bot.on('message', msg => {
 				break;
 
 			case 'setactivity':
-				// Get the new activity
-				let newActivityfile = {
-					"activity": ""
-				};
-
 				deleteMessage(msg);
-				//if there is a new activity
-				if (arguments.length != 0) {
-					for (var i = 0; i < arguments.length; i++) {
-						newActivityfile.activity += arguments[i] + ' ';
-					}
-					sendMessage(msg, "Je suis maintenant en train de jouer à **" + newActivityfile.activity + "** sur ordre de _" + msg.author.username + "_. ");
-				} else {
-					//if there is no new activity
-					sendMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_. ");
-					bot.user.setActivity();
+				var newActivity = "";
+
+				// Construct the new activity string
+				for (var i = 0; i < arguments.length; i++) {
+					newActivity += arguments[i] + ' ';
 				}
 
-				// Set and save the new activity in config.json
-				fs.writeFileSync("./activity.json", JSON.stringify(newActivityfile));
-				bot.user.setActivity(newActivityfile.activity);
+				// If the string is too long (over 128 char)
+				if (newActivity.length > 128) {
+					sendMessage(msg, ":vs: Désolé, mais cette activité est trop longue, je ne peux effectuer que des activités de moins de 128 caractères. ");
+
+				} else {
+					// Stop all activity
+					if (newActivity == "") {
+						bot.user.setActivity();
+						sendMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
+					} else {
+						bot.user.setActivity(newActivity);
+						sendMessage(msg, "Je suis maintenant en train de jouer à **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
+					}
+
+					// Save the new activity in the database
+					var sqlQuery = {
+						text: 'INSERT INTO activity(label) VALUES ($1)',
+						values: [newActivity],
+					}
+					dbClient.query(sqlQuery, (err, res) => {
+						if (err) throw err;
+					});
+				}
+
 				break;
 
 
@@ -345,7 +364,7 @@ bot.on('message', msg => {
 									dbClient.query(sqlQuery, (err, result) => {
 										if (err) throw err;
 									});
-									
+
 									sendMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + homework2string(deletedHomework) + " ");
 								} else {
 									sendMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
@@ -383,4 +402,3 @@ bot.on('message', msg => {
 //	Use the token (stored on Heroku)
 // ---------------------------------
 bot.login(process.env.BOT_TOKEN);
-
