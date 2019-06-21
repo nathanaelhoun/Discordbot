@@ -1,30 +1,47 @@
-Contributing to Abdessamad the discordbot
-==============================
+# Contributing to Abdessamad / Contribuer à Abdessamad
 
 The following document is a set of guidelines for contributing to Abdessamad the discordbot.
 
-## What's a contribution ?
+Le document suivant est un ensemble de guides pour contribuer à Abdessamad le bot Discord.
+
+## What is a contribution / Qu'est-ce qu'une contribution
+
 This bot is made of a bundle of commands like *!help* (showing a list of commands), or *!setactivity* (changing the activity of the bot on Discord).
 You can easily improve this bot by adding any features or adding new commands.
 For that, you have to follow some rules for your additions to work.
 
-## A few informations
+Abdessamad répond à un ensemble de commandes commme *!help* (qui montre la liste des commandes disponibles), ou *!setactivity* (qui change l'activité du bot sur Discord).
+Vous pouvez facilement améliorer le bot en ajoutant des fonctionnalités comme des nouvelles commandes
+Pour ça, voici quelques règles à suivre.
+
+## A few information / Quelque informations
+
 The only file you must change is **bot.js**.
-To improving the bot, the interesting part is in `bot.on('message', msg => {`.
+To add a command, the interesting part is in `bot.on('message', msg => {`.
 
-## Contributing
+Le seul fichier que vous avez à changer est **bot.js**.
+Pour ajouter une commande, la partie intéressante du programme est dans `bot.on('message', msg => {`.
 
-### Adding the command
-If you want to add a command, you have to writing it the the switch (`switch(cmd){`) in lowercase letters.
+## How to contribute / Comment contribuer
 
-### Testing your feature
+### Add a command / Ajouter une commande
+
+If you want to add a command, you have to writing it the the switch (`switch(command){`) in lowercase letters.
+
+Si vous voulez ajouter une commande, vous devez l'écrire dans le *switch* (`switch(command){`) en lettres minuscules.
+
+### Testing your feature / Tester votre fonctionnalité
+
 You don't have access to the token of the real Abdessamad bot.
-In order to test the feature you have added, you need to create a Discord app and store your app's token in a config.json file. Then you will be able to test the feature in a private discord server.  
+We only give it to trustworthy people. So, you can ask for it to Nathanaël or test your feature on a private discorbot.
 
-### Sending of the change
-Once the upgrade did, there are two possibilites.<br />
-The first, you are a member of the class group that uses this bot. So, you are a contributor you can push your upgrade.
-The second, you aren't a member of the class group. To send your upgrade, you have to send a push request.
+Vous n'avez pas accès au token d'identification du vrai Abdessmad.
+Nous le confions uniquement à des personnes de confiance. Vous pouvez nous le demander ou tester votre fonctionnalité sur un bot privé.
 
+### Send us your change / Envoyez-nous votre changement
 
-**Thank you!**
+To send us your upgrade, just create a push request.
+
+Pour nous envoyer votre amélioration, il suffit de créer une *push request*.
+
+**Thank you!** / **Merci !**
