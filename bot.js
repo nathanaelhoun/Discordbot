@@ -266,11 +266,11 @@ bot.on('message', msg => {
 										break;
 
 									case "1":
-										sendMessage(msg, ":zipper_mouth: J'ai bien supprimé un ancien devoir. ");
+										sendMessage(msg, ":ballot_box_with_check: J'ai bien supprimé un ancien devoir. ");
 										break;
 
 									default:
-										sendMessage(msg, ":zipper_mouth: J'ai bien supprimé " + nbElementSupprimes + " vieux devoirs. ");
+										sendMessage(msg, ":ballot_box_with_check: J'ai bien supprimé " + nbElementSupprimes + " vieux devoirs. ");
 								}
 							}
 						});
@@ -346,7 +346,7 @@ bot.on('message', msg => {
 										if (err) throw err;
 									});
 									
-									sendMessage(msg, ":x: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + homework2string(deletedHomework) + " ");
+									sendMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + homework2string(deletedHomework) + " ");
 								} else {
 									sendMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
 								}
