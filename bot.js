@@ -305,8 +305,13 @@ bot.on('message', msg => {
 							description += arguments[i] + " ";
 						}
 
+
+						// What is today's date ?
+						var now = new Date();
+						var today = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+
 						// Check if the date entry is correct
-						if (date < today) {
+						if (date < today ) {
 							sendMessage(msg, ":vs: Déso pas déso, la date que tu as entrée est déjà passée. Il faut la rentrer au format aaaammjj");
 						} else if (!isDateCorrect(date) || date == undefined) {
 							sendMessage(msg, ":vs: Déso pas déso, la date que tu as entrée n'est pas valide. Il faut la rentrer au format aaaammjj");
