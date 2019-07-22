@@ -177,10 +177,10 @@ bot.on('message', msg => {
 				deleteMessage(msg);
 				//Define the !help text
 				var helpText = "# Commandes actuelles : ";
-				helpText += "\n :small_orange_diamond: !help pour obtenir de l'aide, ";
-				helpText += "\n :small_orange_diamond: !ping pour jouer au tennis de table, ";
-				helpText += "\n :small_orange_diamond: !setActivity [+texte] pour choisir l'activité du bot, ";
-				helpText += "\n :small_orange_diamond: !hw [+2ème commande] pour interagir avec les devoirs. ";
+				helpText += "\n :small_orange_diamond: `!help` pour obtenir de l'aide, ";
+				helpText += "\n :small_orange_diamond: `!ping` pour jouer au tennis de table, ";
+				helpText += "\n :small_orange_diamond: `!setActivity [+texte]` pour choisir l'activité du bot, ";
+				helpText += "\n :small_orange_diamond: `!hw [+2ème commande]` pour interagir avec les devoirs. ";
 				replyToMessage(msg, helpText);
 				break;
 
@@ -400,12 +400,12 @@ bot.on('message', msg => {
 
 					// help
 					default:
-						var hwHelpText = "Voici les commandes pour gérer les devoirs (à ajouter derrière !hw): ";
-						hwHelpText += "\n :small_blue_diamond: show pour montrer les devoirs à faire, ";
-						hwHelpText += "\n :small_blue_diamond: show id pour montrer les devoirs à faire avec les ids, ";
-						hwHelpText += "\n :small_blue_diamond: clean pour supprimer les anciens devoirs, ";
-						hwHelpText += "\n :small_blue_diamond: delete [id] pour supprimer un devoir précis avec son id, ";
-						hwHelpText += "\n :small_blue_diamond: add [aaaammjj] [matière] [libellé] pour ajouter une date. ";
+						var hwHelpText = "Voici les commandes pour gérer les devoirs (à ajouter derrière `!hw`): ";
+						hwHelpText += "\n :small_blue_diamond: `show` pour montrer les devoirs à faire, ";
+						hwHelpText += "\n :small_blue_diamond: `show id` pour montrer les devoirs à faire avec les ids, ";
+						hwHelpText += "\n :small_blue_diamond: `clean` pour supprimer les anciens devoirs, ";
+						hwHelpText += "\n :small_blue_diamond: `delete [id]` pour supprimer un devoir précis avec son id, ";
+						hwHelpText += "\n :small_blue_diamond: `add [aaaammjj] [matière] [libellé]` pour ajouter une date. ";
 
 						replyToMessage(msg, hwHelpText);
 				}
