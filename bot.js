@@ -330,7 +330,7 @@ bot.on('message', msg => {
 						var today = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
 
 						// Check if the date entry is correct
-						if (date < today ) {
+						if (date < today) {
 							replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée est déjà passée. Il faut la rentrer au format aaaammjj");
 						} else if (!isDateCorrect(date) || date == undefined) {
 							replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée n'est pas valide. Il faut la rentrer au format aaaammjj");
@@ -397,16 +397,22 @@ bot.on('message', msg => {
 						});
 						break;
 
-
 					// help
+					case 'help':
+						var commandNotExists = false;
+
+					// help message
 					default:
-						var hwHelpText = "Voici les commandes pour gérer les devoirs (à ajouter derrière `!hw`): ";
+						var hwHelpText = "";
+						if (typeof commandNotExists == 'undefined' || commandNotExists) {
+							hwHelpText += "Cette commande n'est pas reconnue.\n";
+						}
+						hwHelpText += "Voici les commandes pour gérer les devoirs (à ajouter derrière `!hw`): ";
 						hwHelpText += "\n :small_blue_diamond: `show` pour montrer les devoirs à faire, ";
 						hwHelpText += "\n :small_blue_diamond: `show id` pour montrer les devoirs à faire avec les ids, ";
 						hwHelpText += "\n :small_blue_diamond: `clean` pour supprimer les anciens devoirs, ";
 						hwHelpText += "\n :small_blue_diamond: `delete [id]` pour supprimer un devoir précis avec son id, ";
 						hwHelpText += "\n :small_blue_diamond: `add [aaaammjj] [matière] [libellé]` pour ajouter une date. ";
-
 						replyToMessage(msg, hwHelpText);
 				}
 				break;
