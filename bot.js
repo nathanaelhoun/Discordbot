@@ -208,7 +208,7 @@ bot.on('message', msg => {
 						replyToMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
 					} else {
 						bot.user.setActivity(newActivity);
-						replyToMessage(msg, "Je suis maintenant en train de jouer à **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
+						replyToMessage(msg, "Je suis maintenant en train de **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
 					}
 
 					// Save the new activity in the database
