@@ -1,5 +1,5 @@
 /**
- * Abdessamad the discord bot
+ * Abdessamad, the gentle discord bot
  * Created to interact in discord class groups.
  * 
  * @version 1.0
