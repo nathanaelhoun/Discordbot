@@ -177,10 +177,11 @@ bot.on('message', msg => {
 				deleteMessage(msg);
 				//Define the !help text
 				var helpText = "# Commandes actuelles : ";
-				helpText += "\n :small_orange_diamond: `!help` pour obtenir de l'aide, ";
-				helpText += "\n :small_orange_diamond: `!ping` pour jouer au tennis de table, ";
-				helpText += "\n :small_orange_diamond: `!setActivity [+texte]` pour choisir l'activité du bot, ";
-				helpText += "\n :small_orange_diamond: `!hw [+2ème commande]` pour interagir avec les devoirs. ";
+				helpText += "\n :small_orange_diamond: \'!help\' pour obtenir de l'aide, ";
+				helpText += "\n :small_orange_diamond: \'!ping\' pour jouer au tennis de table, ";
+				helpText += "\n :small_orange_diamond: \'!setActivity [+texte]\' pour choisir l'activité du bot, ";
+				helpText += "\n :small_orange_diamond: \'!makeTeams [nombre par équipe] [role]\' pour faire des équipes avec les membres d'un rôle, ";
+				helpText += "\n :small_orange_diamond: \'!hw [+2ème commande]\' pour interagir avec les devoirs. ";
 				replyToMessage(msg, helpText);
 				break;
 
@@ -407,21 +408,97 @@ bot.on('message', msg => {
 						if (typeof commandNotExists == 'undefined' || commandNotExists) {
 							hwHelpText += "Cette commande n'est pas reconnue.\n";
 						}
-						hwHelpText += "Voici les commandes pour gérer les devoirs (à ajouter derrière `!hw`): ";
-						hwHelpText += "\n :small_blue_diamond: `show` pour montrer les devoirs à faire, ";
-						hwHelpText += "\n :small_blue_diamond: `show id` pour montrer les devoirs à faire avec les ids, ";
-						hwHelpText += "\n :small_blue_diamond: `clean` pour supprimer les anciens devoirs, ";
-						hwHelpText += "\n :small_blue_diamond: `delete [id]` pour supprimer un devoir précis avec son id, ";
-						hwHelpText += "\n :small_blue_diamond: `add [aaaammjj] [matière] [libellé]` pour ajouter une date. ";
+						hwHelpText += "Voici les commandes pour gérer les devoirs (à ajouter derrière \'!hw\'): ";
+						hwHelpText += "\n :small_blue_diamond: \'show\' pour montrer les devoirs à faire, ";
+						hwHelpText += "\n :small_blue_diamond: \'show id\' pour montrer les devoirs à faire avec les ids, ";
+						hwHelpText += "\n :small_blue_diamond: \'clean\' pour supprimer les anciens devoirs, ";
+						hwHelpText += "\n :small_blue_diamond: \'delete [id]\' pour supprimer un devoir précis avec son id, ";
+						hwHelpText += "\n :small_blue_diamond: \'add [aaaammjj] [matière] [libellé]\' pour ajouter une date. ";
 						replyToMessage(msg, hwHelpText);
 				}
+				break;
+
+			case 'maketeams':
+				deleteMessage(msg);
+
+				if (arguments.length < 2) {
+					replyToMessage(msg, ":x: Oups, le nombre d'arguments pour cette commande n'est pas celui attendu. Fais \'!help\' pour voir ?");
+					break;
+				}
+
+				var numberPerTeam = parseInt(arguments[0]);
+				if (isNaN(numberPerTeam) || numberPerTeam < 2) {
+					replyToMessage(msg, ":vs: Tu crois vraiment qu'on va faire des équipes avec *" + numberPerTeam + "* personne dans chaque ? :P ");
+					break;
+				}
+
+				var role;
+
+				if (arguments[1].substr(0, 2) == '<@') {
+					// The [role] is the role's tag
+					let id = msg.mentions.roles.first().id;
+					role = msg.guild.roles.find(x => x.id == id);
+				} else {
+					// The [role] is the role's name
+					var roleName = "";
+					for (var i = 1; i < arguments.length; i++) {
+						roleName += arguments[i];
+						if (i < arguments.length - 1) {
+							roleName += ' ';
+						}
+					}
+					role = msg.guild.roles.find(x => x.name == roleName);
+				}
+
+				if (role === undefined || role === null) {
+					replyToMessage(msg, ":x: Le rôle *" + roleName + "* n'existe pas sur ce serveur, vérifie l'orthographe.");
+					break;
+				}
+
+				var members = role.members.map(m => m.displayName);
+
+				if (members.length <= numberPerTeam) {
+					replyToMessage(msg, ":vs: Il y a moins de gens qui ont ce rôle que de personnes par équipe, donc ... tout le monde ensemble ! :confetti_ball: ");
+					break;
+				}
+
+				// Randomization
+				var isPerfect = (members.length % numberPerTeam) == 0;
+				var teams = [];
+				var team_number = 0;
+				teams[0] = [];
+
+				while (members.length > 0) {
+					if (teams[team_number].length >= numberPerTeam) {
+						team_number++;
+						teams[team_number] = [];
+					}
+					let randomNumber = parseInt(Math.random() * members.length);
+
+					teams[team_number].push(members[randomNumber]);
+
+					members.splice(randomNumber, 1);
+				}
+
+				var teamsText = ":white_check_mark: J'ai constitué des groupes de " + numberPerTeam + " avec le rôle " + role.name + "";
+				if (!isPerfect) {
+					teamsText += " (mais désolé, pas toutes égales, j'ai fait au mieux...) ";
+				}
+				for (let i = 0; i < teams.length; i++) {
+					teamsText += "\n :diamond_shape_with_a_dot_inside:  Équipe " + (i + 1) + " : ";
+					for (let j = 0; j < teams[i].length; j++) {
+						teamsText += "\n		:white_medium_small_square:  " + teams[i][j];
+					}
+				}
+
+				replyToMessage(msg, teamsText);
 				break;
 
 
 			// if the command does not exist
 			default:
 				deleteMessage(msg);
-				replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essayez '!help' pour voir ?");
+				replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie \'!help\' pour voir ?");
 				break;
 		}
 	}
