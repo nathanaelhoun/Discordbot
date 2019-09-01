@@ -480,7 +480,7 @@ bot.on('message', msg => {
 					members.splice(randomNumber, 1);
 				}
 
-				var teamsText = ":white_check_mark: J'ai constitué des groupes de " + numberPerTeam + " avec le rôle " + role.name + "";
+				var teamsText = ":white_check_mark: J'ai constitué des groupes de " + numberPerTeam + " avec le rôle <@&" + role.id + ">";
 				if (!isPerfect) {
 					teamsText += " (mais désolé, pas toutes égales, j'ai fait au mieux...) ";
 				}
@@ -497,6 +497,7 @@ bot.on('message', msg => {
 
 			// if the command does not exist
 			default:
+				mention
 				deleteMessage(msg);
 				replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie \'!help\' pour voir ?");
 				break;
