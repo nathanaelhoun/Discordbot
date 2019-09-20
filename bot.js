@@ -182,7 +182,7 @@ bot.on('message', msg => {
 				helpText += "\n :small_orange_diamond: \'!setActivity [+texte]\' pour choisir l'activité du bot, ";
 				helpText += "\n :small_orange_diamond: \'!makeTeams [nombre par équipe] [role]\' pour faire des équipes avec les membres d'un rôle, ";
 				helpText += "\n :small_orange_diamond: \'!hw [+2ème commande]\' pour interagir avec les devoirs. ";
-				replyToMessage(msg, helpText);
+				msg.author.send(helpText);
 				break;
 
 			case 'ping':
