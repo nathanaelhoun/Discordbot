@@ -483,6 +483,13 @@ bot.on('message', msg => {
 				var teamsText = ":white_check_mark: J'ai constitué des groupes de " + numberPerTeam + " avec le rôle <@&" + role.id + ">";
 				if (!isPerfect) {
 					teamsText += " (mais désolé, pas toutes égales, j'ai fait au mieux...) ";
+
+					if (teams[team_number].length == 1) {
+						let randomNumber = parseInt(Math.random() * (teams.length - 1));
+						teams[randomNumber].push(teams[team_number][0]);
+						teams.splice(team_number, 1);
+						teamsText += "(et au moins le dernier n'est pas tout seul)"
+					}
 				}
 				for (let i = 0; i < teams.length; i++) {
 					teamsText += "\n :diamond_shape_with_a_dot_inside:  Équipe " + (i + 1) + " : ";
