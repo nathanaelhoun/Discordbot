@@ -7,133 +7,25 @@
  * @author Promo 2018 des CMI Informatique de Besançon
  */
 
+// Load functions
+const functions = require('./functions.js');
+const connection = require('./connection_local.js');
+
 // Load the discord.js library
 const Discord = require('discord.js');
-
-// Load the fs filesystem library
-const fs = require('fs');
-
-// Load the database library and create the client
-// Using the Heroku PostGres database
-const { Pool, Client } = require('pg');
-
-
-// ------------------------
-// 		Functions
-// ------------------------
-
-/**
- * Delete a message and log it into the console
- * 
- * @param {Message} message 
- */
-function deleteMessage(message) {
-	console.log('Deleted message from ', message.author.username);
-	message.delete();
-}
-
-/**
- * Reply to a message with a string text
- * 
- * @param {Message} message the message to answer
- * @param {string} text the text to send
- */
-function replyToMessage(message, text) {
-	message.channel.send(text);
-	console.log('Sent the message:', text);
-}
-
-/**
- * Checks that an yyyymmdd date is correct
- * 
- * @param {int} dateInt the date to check
- * @return {boolean} true if it is correct, false otherwise
- */
-function isDateCorrect(dateInt) {
-	let year = Math.floor(dateInt / 10000);
-	dateInt = dateInt % 10000
-	let month = Math.floor((dateInt) / 100);
-	dateInt = dateInt % 100;
-	let day = Math.floor(dateInt);
-
-	if (month > 13 || month < 0) {
-		return (false);
-	}
-	switch (month) {
-		case 1:
-		case 3:
-		case 5:
-		case 7:
-		case 8:
-		case 10:
-		case 12:
-			if (day > 31 || day < 0) {
-				return (false);
-			}
-			break;
-
-		case 2:
-			if (day > 29 || day < 0) {
-				return (false);
-			}
-			break;
-
-		default:
-			if (day > 30 || day < 0) {
-				return (false);
-			}
-	}
-	return (true);
-}
-
-/**
- * Get a string with a good presentation from an homework object
- * 
- * @param {Homework} homework 
- * @return {string}
- */
-function homework2string(homework) {
-	return (homework.formateddate + " - **" + homework.subject + "** -  " + homework.description + " ");
-}
-
 
 // ------------------------
 // 	Launching the bot
 // ------------------------
 
-// Create the client
 const bot = new Discord.Client();
+const dbClient = connection.createDbClient();
+bot.login(connection.getIdToken());
 
-// Create the database pool
-const pool = new Pool({
-	connectionString: process.env.DATABASE_URL,
-	port: 5432,
-	ssl: true
-});
-
-// Create the database client
-const dbClient = new Client({
-	connectionString: process.env.DATABASE_URL,
-	port: 5432,
-	ssl: true
-});
-
-// Launch the client and connecting it to the database
 bot.on('ready', () => {
 	console.log("Je suis vivant !");
-	var activity = "";
-
-	// Query the database for the actual activity of the bot
-	var sqlQuery = "SELECT * FROM activity ORDER BY id DESC";
-	dbClient.query(sqlQuery, (err, result) => {
-		if (err) throw err;
-
-		if (result.rows[0] != undefined) {
-			activity = result.rows[0].label;
-			bot.user.setActivity(activity);
-		}
-	})
-
+	var activity = connection.getLastActivity(dbClient);
+	bot.user.setActivity(activity);
 	console.log("Activité actuelle : " + activity);
 
 	dbClient.connect((err) => {
@@ -174,7 +66,7 @@ bot.on('message', msg => {
 
 			//help
 			case 'help':
-				deleteMessage(msg);
+				functions.deleteMessage(msg);
 				//Define the !help text
 				var helpText = "# Commandes actuelles : ";
 				helpText += "\n :small_orange_diamond: \'!help\' pour obtenir de l'aide, ";
@@ -186,11 +78,11 @@ bot.on('message', msg => {
 				break;
 
 			case 'ping':
-				replyToMessage(msg, "Pong ! :baseball:");
+				functions.replyToMessage(msg, "Pong ! :baseball:");
 				break;
 
 			case 'setactivity':
-				deleteMessage(msg);
+				functions.deleteMessage(msg);
 				var newActivity = "";
 
 				// Construct the new activity string
@@ -200,16 +92,16 @@ bot.on('message', msg => {
 
 				// If the string is too long (over 128 char)
 				if (newActivity.length > 128) {
-					replyToMessage(msg, ":vs: Désolé, mais cette activité est trop longue, je ne peux effectuer que des activités de moins de 128 caractères. ");
+					functions.replyToMessage(msg, ":vs: Désolé, mais cette activité est trop longue, je ne peux effectuer que des activités de moins de 128 caractères. ");
 
 				} else {
 					// Stop all activity
 					if (newActivity == "") {
 						bot.user.setActivity();
-						replyToMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
+						functions.replyToMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
 					} else {
 						bot.user.setActivity(newActivity);
-						replyToMessage(msg, "Je suis maintenant en train de **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
+						functions.replyToMessage(msg, "Je suis maintenant en train de **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
 					}
 
 					// Save the new activity in the database
@@ -240,7 +132,7 @@ bot.on('message', msg => {
 
 					// Show the homeworks
 					case 'show':
-						deleteMessage(msg);
+						functions.deleteMessage(msg);
 						var homeworksText = "";
 						var showID = false;
 
@@ -261,7 +153,7 @@ bot.on('message', msg => {
 							} else {
 								homeworksText = ":blue_book: Voici les devoirs à faire, bon courage : ";
 								for (var i = 0; i < resultRaw.rows.length; i++) {
-									let text = homework2string(resultRaw.rows[i]);
+									let text = functions.homework2string(resultRaw.rows[i]);
 
 									//Add the IDs
 									if (showID) {
@@ -271,21 +163,21 @@ bot.on('message', msg => {
 									homeworksText += "\n" + text;
 								}
 							}
-							replyToMessage(msg, homeworksText);
+							functions.replyToMessage(msg, homeworksText);
 						});
 						break;
 
 
 					// Delete old homework
 					case 'clean':
-						deleteMessage(msg);
+						functions.deleteMessage(msg);
 						var nbElementSupprimes = 0;
 
 						// Count the number of old homeworks
 						var sqlQuery = "SELECT COUNT(id) AS number FROM homework WHERE date < NOW()::DATE";
 						dbClient.query(sqlQuery, (err, result) => {
 							if (err) {
-								replyToMessage(msg, ":x: Impossible de nettoyer ma mémoire, merci de vérifier mon code :thinking: ");
+								functions.replyToMessage(msg, ":x: Impossible de nettoyer ma mémoire, merci de vérifier mon code :thinking: ");
 								throw err;
 							} else {
 								nbElementSupprimes = result.rows[0].number;
@@ -301,15 +193,15 @@ bot.on('message', msg => {
 								//On envoie un message pour informer du nombre d'éléments supprimés
 								switch (nbElementSupprimes) {
 									case "0":
-										replyToMessage(msg, ":ballot_box_with_check: Pas d'ancien devoir à supprimer mais merci de vous soucier de ma mémoire :smile: ");
+										functions.replyToMessage(msg, ":ballot_box_with_check: Pas d'ancien devoir à supprimer mais merci de vous soucier de ma mémoire :smile: ");
 										break;
 
 									case "1":
-										replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé un ancien devoir. ");
+										functions.replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé un ancien devoir. ");
 										break;
 
 									default:
-										replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé " + nbElementSupprimes + " vieux devoirs. ");
+										functions.replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé " + nbElementSupprimes + " vieux devoirs. ");
 								}
 							}
 						});
@@ -332,13 +224,13 @@ bot.on('message', msg => {
 
 						// Check if the date entry is correct
 						if (date < today) {
-							replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée est déjà passée. Il faut la rentrer au format aaaammjj");
-						} else if (!isDateCorrect(date) || date == undefined) {
-							replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée n'est pas valide. Il faut la rentrer au format aaaammjj");
+							functions.replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée est déjà passée. Il faut la rentrer au format aaaammjj");
+						} else if (!functions.isDateCorrect(date) || date == undefined) {
+							functions.replyToMessage(msg, ":vs: Déso pas déso, la date que tu as entrée n'est pas valide. Il faut la rentrer au format aaaammjj");
 						} else if (subject == undefined) {
-							replyToMessage(msg, ":vs: Coco, t'as même pas mis de matière, comment je suis censé gérer ça moi ? ");
+							functions.replyToMessage(msg, ":vs: Coco, t'as même pas mis de matière, comment je suis censé gérer ça moi ? ");
 						} else if (description == "") {
-							replyToMessage(msg, ":vs:  Bon, s'il n'y a rien à faire en description, pas la peine de m'appeler hein ! ");
+							functions.replyToMessage(msg, ":vs:  Bon, s'il n'y a rien à faire en description, pas la peine de m'appeler hein ! ");
 						} else {
 							// The date entry is correct so
 							// Add it to the database
@@ -350,11 +242,11 @@ bot.on('message', msg => {
 							dbClient.query(sqlQuery, (err, res) => {
 								if (err) {
 									console.log(err.stack)
-									replyToMessage(msg, ":x: Hum, impossible de rajouter ce devoir. Je crois qu'il faudrait checker mon code :thinking:")
+									functions.replyToMessage(msg, ":x: Hum, impossible de rajouter ce devoir. Je crois qu'il faudrait checker mon code :thinking:")
 								} else {
-									deleteMessage(msg);
+									functions.deleteMessage(msg);
 									let homework = { "formateddate": date, "subject": subject, "description": description };
-									replyToMessage(msg, ":white_check_mark: J'ai bien rajouté à ma liste : " + homework2string(homework));
+									functions.replyToMessage(msg, ":white_check_mark: J'ai bien rajouté à ma liste : " + functions.homework2string(homework));
 								}
 							});
 						}
@@ -363,7 +255,7 @@ bot.on('message', msg => {
 
 					// Delete a precise homework
 					case 'delete':
-						deleteMessage(msg);
+						functions.deleteMessage(msg);
 
 						var id = arguments[1];
 						var deletedHomework;
@@ -376,7 +268,7 @@ bot.on('message', msg => {
 						dbClient.query(sqlQuery, (err, result) => {
 							if (err) {
 								console.log(err.stack);
-								replyToMessage(msg, ":x: Impossible de supprimer ce devoir, il semble ne pas exister")
+								functions.replyToMessage(msg, ":x: Impossible de supprimer ce devoir, il semble ne pas exister")
 							} else {
 								deletedHomework = result.rows[0];
 
@@ -390,9 +282,9 @@ bot.on('message', msg => {
 										if (err) throw err;
 									});
 
-									replyToMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + homework2string(deletedHomework) + " ");
+									functions.replyToMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + functions.homework2string(deletedHomework) + " ");
 								} else {
-									replyToMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
+									functions.replyToMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
 								}
 							}
 						});
@@ -414,21 +306,21 @@ bot.on('message', msg => {
 						hwHelpText += "\n :small_blue_diamond: \'clean\' pour supprimer les anciens devoirs, ";
 						hwHelpText += "\n :small_blue_diamond: \'delete [id]\' pour supprimer un devoir précis avec son id, ";
 						hwHelpText += "\n :small_blue_diamond: \'add [aaaammjj] [matière] [libellé]\' pour ajouter une date. ";
-						replyToMessage(msg, hwHelpText);
+						functions.replyToMessage(msg, hwHelpText);
 				}
 				break;
 
 			case 'maketeams':
-				deleteMessage(msg);
+				functions.deleteMessage(msg);
 
 				if (arguments.length < 2) {
-					replyToMessage(msg, ":x: Oups, le nombre d'arguments pour cette commande n'est pas celui attendu. Fais \'!help\' pour voir ?");
+					functions.replyToMessage(msg, ":x: Oups, le nombre d'arguments pour cette commande n'est pas celui attendu. Fais \'!help\' pour voir ?");
 					break;
 				}
 
 				var numberPerTeam = parseInt(arguments[0]);
 				if (isNaN(numberPerTeam) || numberPerTeam < 2) {
-					replyToMessage(msg, ":vs: Tu crois vraiment qu'on va faire des équipes avec *" + numberPerTeam + "* personne dans chaque ? :P ");
+					functions.replyToMessage(msg, ":vs: Tu crois vraiment qu'on va faire des équipes avec *" + numberPerTeam + "* personne dans chaque ? :P ");
 					break;
 				}
 
@@ -451,14 +343,14 @@ bot.on('message', msg => {
 				}
 
 				if (role === undefined || role === null) {
-					replyToMessage(msg, ":x: Le rôle *" + roleName + "* n'existe pas sur ce serveur, vérifie l'orthographe.");
+					functions.replyToMessage(msg, ":x: Le rôle *" + roleName + "* n'existe pas sur ce serveur, vérifie l'orthographe.");
 					break;
 				}
 
 				var members = role.members.map(m => m.displayName);
 
 				if (members.length <= numberPerTeam) {
-					replyToMessage(msg, ":vs: Il y a moins de gens qui ont ce rôle que de personnes par équipe, donc ... tout le monde ensemble ! :confetti_ball: ");
+					functions.replyToMessage(msg, ":vs: Il y a moins de gens qui ont ce rôle que de personnes par équipe, donc ... tout le monde ensemble ! :confetti_ball: ");
 					break;
 				}
 
@@ -498,22 +390,15 @@ bot.on('message', msg => {
 					}
 				}
 
-				replyToMessage(msg, teamsText);
+				functions.replyToMessage(msg, teamsText);
 				break;
 
 
 			// if the command does not exist
 			default:
-				mention
-				deleteMessage(msg);
-				replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie \'!help\' pour voir ?");
+				functions.deleteMessage(msg);
+				functions.replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie \'!help\' pour voir ?");
 				break;
 		}
 	}
 });
-
-
-// ---------------------------------
-//	Use the token (stored on Heroku)
-// ---------------------------------
-bot.login(process.env.BOT_TOKEN);

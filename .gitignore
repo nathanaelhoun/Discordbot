@@ -2,3 +2,4 @@
 auth.json
 localconfig.txt
 *.code-workspace
+connection_local.js
