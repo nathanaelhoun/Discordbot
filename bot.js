@@ -9,7 +9,7 @@
 
 // Load functions
 const functions = require('./functions.js');
-const connection = require('./connection_local.js');
+const connection = require('./connection.js');
 
 // Load the discord.js library
 const Discord = require('discord.js');

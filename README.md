@@ -24,9 +24,9 @@ Abdessamad peut répondre à certains messages dans vos conversations pour vous 
 
 ## How can I use Abdessamad ? / Comment puis-je utiliser Abdessamad
 
-For the moment, Abdessamad is only available on our class server, but it will soon be available for everyone !
+For the moment, Abdessamad is only available on our class server.
 
-Pour l'instant, Abdessamad est seulement disponible sur le serveur de notre classe, mais il va bientôt être disponible pour tout le monde.
+Pour l'instant, Abdessamad est seulement disponible sur le serveur de notre classe.
 
 ## How to help / Comment aider
 
