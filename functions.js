@@ -72,19 +72,23 @@ exports.homework2string = function (homework) {
     return (homework.formateddate + " - **" + homework.subject + "** -  " + homework.description + " ");
 }
 
+/**
+ * Hash a string into an integer
+ * 
+ * @param {string} str
+ * @return {int}
+ */
+exports.hashCode = function (str) {
+    if (typeof str != "string") {
+        return 0;
+    }
 
-
-exports.hashCode = function () {
     var hash = 0;
-    if (this.length == 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        char = this.charCodeAt(i);
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; // Convert to 32bit integer
     }
     return hash;
-}
-
-exports.sayHello = function () {
-    console.log("Hello");
 }
