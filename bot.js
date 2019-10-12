@@ -83,11 +83,10 @@ bot.on('message', msg => {
 
 			case 268709233: //setactivity
 				functions.deleteMessage(msg);
-				abdessamad.setactivity(msg, bot, dbClient)
+				abdessamad.setactivity(msg, bot, dbClient, arguments);
 				break;
 
 			case 3343: // hw
-
 				// Get the second command and lowerCase it
 				var secondCommand = arguments[0];
 				if (secondCommand == undefined) {
@@ -109,6 +108,7 @@ bot.on('message', msg => {
 						break;
 
 					case functions.hashCode('add'): // Add new homework
+						functions.deleteMessage(msg);
 						var date = arguments[1];
 						var subject = arguments[2];
 						var description = "";
@@ -204,12 +204,12 @@ bot.on('message', msg => {
 						break;
 
 					case functions.hashCode("add"):
-						var person = msg.mentions.members.first().id;
 						var number = parseInt(arguments[2]);
-						if (person == undefined || number == undefined || isNaN(number)) {
-							functions.replyToMessage(":vs: Les arguments ne sont pas valides, tape `!int help`.");
+						if (msg.mentions.members.first() == undefined || number == undefined || isNaN(number)) {
+							functions.replyToMessage(msg, ":vs: Les arguments ne sont pas valides, tape `!int help`.");
 							break;
 						}
+						var person = msg.mentions.members.first().id;
 						abdessamad.intadd(msg, dbClient, person, number);
 						break;
 

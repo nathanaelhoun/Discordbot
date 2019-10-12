@@ -25,7 +25,7 @@ exports.help = function (msg) {
  * @param {Discord.Client} bot
  * @param {Client} dbClient
  */
-exports.setactivity = function (msg, bot, dbClient) {
+exports.setactivity = function (msg, bot, dbClient, arguments) {
     var newActivity = "";
 
     // Construct the new activity string
@@ -37,17 +37,14 @@ exports.setactivity = function (msg, bot, dbClient) {
     if (newActivity.length > 128) {
         functions.replyToMessage(msg, ":vs: Désolé, mais cette activité est trop longue, je ne peux effectuer que des activités de moins de 128 caractères. ");
 
-    } else {
-        // Stop all activity
-        if (newActivity == "") {
-            bot.user.setActivity();
-            functions.replyToMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
-        } else {
-            bot.user.setActivity(newActivity);
-            functions.replyToMessage(msg, "Je suis maintenant en train de **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
-        }
+    } else if (newActivity == "") {
+        bot.user.setActivity();
+        functions.replyToMessage(msg, "J'arrête toute activité et à partir de maintenant, je m'ennuie. Merci _" + msg.author.username + "_ :sob: ");
 
-        // Save the new activity in the database
+    } else {
+        bot.user.setActivity(newActivity);
+        functions.replyToMessage(msg, "Je suis maintenant en train de **" + newActivity + "** sur ordre de _" + msg.author.username + "_. :sunny: ");
+
         var sqlQuery = {
             text: 'INSERT INTO activity(label) VALUES ($1)',
             values: [newActivity],
@@ -57,6 +54,7 @@ exports.setactivity = function (msg, bot, dbClient) {
         });
     }
 }
+
 
 /**
  * Display the homeworks to do
@@ -283,7 +281,6 @@ exports.intadd = function (msg, dbClient, person, number) {
     dbClient.query(sqlQuery, (err, resultRaw) => {
         if (err) throw err;
 
-        console.log(resultRaw);
         var sqlQuery2 = "";
         if (resultRaw.rows.length != 0) {
             var actualPoints = parseInt(resultRaw.rows[0].int_number) + number;
@@ -301,9 +298,9 @@ exports.intadd = function (msg, dbClient, person, number) {
             if (err) throw err;
 
             if (number > 0) {
-                functions.replyToMessage(msg, "J'ai bien rajouté " + number + " points de int à " + member.displayName + "sur ordre de _" + msg.author.username + "_.");
+                functions.replyToMessage(msg, "J'ai bien rajouté " + number + " points de int à *" + member.displayName + "* sur ordre de _" + msg.author.username + "_.");
             } else {
-                functions.replyToMessage(msg, "J'ai bien retiré " + -number + " points de int à " + member.displayName + "sur ordre de _" + msg.author.username + "_.");
+                functions.replyToMessage(msg, "J'ai bien retiré " + -number + " points de int à *" + member.displayName + "* sur ordre de _" + msg.author.username + "_.");
             }
         });
 
