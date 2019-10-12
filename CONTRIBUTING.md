@@ -2,7 +2,7 @@
 
 The following document is a set of guidelines for contributing to Abdessamad the discordbot.
 
-Le document suivant est un ensemble de guides pour contribuer à Abdessamad le bot Discord.
+Le document suivant est un guide pour contribuer à Abdessamad, le bot Discord.
 
 ## What is a contribution / Qu'est-ce qu'une contribution
 
@@ -26,9 +26,9 @@ Pour ajouter une commande, la partie intéressante du programme est dans `bot.on
 
 ### Add a command / Ajouter une commande
 
-If you want to add a command, you have to writing it the the switch (`switch(command){`) in lowercase letters.
+If you want to add a command, you have to write in the switch (`switch(command){`) the hashed code of the command written in lowercase letters.
 
-Si vous voulez ajouter une commande, vous devez l'écrire dans le *switch* (`switch(command){`) en lettres minuscules.
+Si vous voulez ajouter une commande, vous devez écrire dans le *switch* (`switch(command){`) le code haché de la commande en lettres minuscules.
 
 ### Testing your feature / Tester votre fonctionnalité
 
@@ -40,8 +40,8 @@ Nous le confions uniquement à des personnes de confiance. Vous pouvez nous le d
 
 ### Send us your change / Envoyez-nous votre changement
 
-To send us your upgrade, just create a push request.
+To send us your upgrade, just create a pull request.
 
-Pour nous envoyer votre amélioration, il suffit de créer une *push request*.
+Pour nous envoyer votre amélioration, il suffit de créer une *pull request*.
 
 **Thank you!** / **Merci !**
