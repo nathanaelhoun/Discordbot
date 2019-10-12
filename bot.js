@@ -9,7 +9,7 @@
 
 // Load functions
 const functions = require('./functions.js');
-const connection = require('./connection_local.js');
+const connection = require('./connection.js');
 
 // Load the discord.js library
 const Discord = require('discord.js');
@@ -61,27 +61,26 @@ bot.on('message', msg => {
 			}
 		}
 
-		//Detect the command and execute it
-		switch (command) {
+		switch (functions.hashCode(command)) {
 
 			//help
-			case 'help':
+			case 3198785:
 				functions.deleteMessage(msg);
 				//Define the !help text
 				var helpText = "# Commandes actuelles : ";
-				helpText += "\n :small_orange_diamond: \'!help\' pour obtenir de l'aide, ";
-				helpText += "\n :small_orange_diamond: \'!ping\' pour jouer au tennis de table, ";
-				helpText += "\n :small_orange_diamond: \'!setActivity [+texte]\' pour choisir l'activité du bot, ";
-				helpText += "\n :small_orange_diamond: \'!makeTeams [nombre par équipe] [role]\' pour faire des équipes avec les membres d'un rôle, ";
-				helpText += "\n :small_orange_diamond: \'!hw [+2ème commande]\' pour interagir avec les devoirs. ";
+				helpText += "\n :small_orange_diamond: `!help` pour obtenir de l'aide, ";
+				helpText += "\n :small_orange_diamond: `!ping` pour jouer au tennis de table, ";
+				helpText += "\n :small_orange_diamond: `!setActivity [+texte]` pour choisir l'activité du bot, ";
+				helpText += "\n :small_orange_diamond: `!makeTeams [nombre par équipe] [role]` pour faire des équipes avec les membres d'un rôle, ";
+				helpText += "\n :small_orange_diamond: `!hw [+2ème commande]` pour interagir avec les devoirs. ";
 				msg.author.send(helpText);
 				break;
 
-			case 'ping':
+			case 3441010:
 				functions.replyToMessage(msg, "Pong ! :baseball:");
 				break;
 
-			case 'setactivity':
+			case 268709233:
 				functions.deleteMessage(msg);
 				var newActivity = "";
 
@@ -118,7 +117,7 @@ bot.on('message', msg => {
 
 
 			// Commands relative to the homeworks
-			case "hw":
+			case 3343:
 
 				// Get the second command and lowerCase it
 				var secondCommand = arguments[0];
@@ -128,10 +127,10 @@ bot.on('message', msg => {
 					secondCommand = secondCommand.toLowerCase();
 				}
 
-				switch (secondCommand) {
+				switch (functions.hashCode(secondCommand)) {
 
 					// Show the homeworks
-					case 'show':
+					case functions.hashCode('show'):
 						functions.deleteMessage(msg);
 						var homeworksText = "";
 						var showID = false;
@@ -169,7 +168,7 @@ bot.on('message', msg => {
 
 
 					// Delete old homework
-					case 'clean':
+					case functions.hashCode('clean'):
 						functions.deleteMessage(msg);
 						var nbElementSupprimes = 0;
 
@@ -209,7 +208,7 @@ bot.on('message', msg => {
 
 
 					// Add new homework
-					case 'add':
+					case functions.hashCode('add'):
 						var date = arguments[1];
 						var subject = arguments[2];
 						var description = "";
@@ -254,7 +253,7 @@ bot.on('message', msg => {
 
 
 					// Delete a precise homework
-					case 'delete':
+					case functions.hashCode('delete'):
 						functions.deleteMessage(msg);
 
 						var id = arguments[1];
@@ -291,7 +290,7 @@ bot.on('message', msg => {
 						break;
 
 					// help
-					case 'help':
+					case functions.hashCode('help'):
 						var commandNotExists = false;
 
 					// help message
@@ -300,21 +299,21 @@ bot.on('message', msg => {
 						if (typeof commandNotExists == 'undefined' || commandNotExists) {
 							hwHelpText += "Cette commande n'est pas reconnue.\n";
 						}
-						hwHelpText += "Voici les commandes pour gérer les devoirs (à ajouter derrière \'!hw\'): ";
-						hwHelpText += "\n :small_blue_diamond: \'show\' pour montrer les devoirs à faire, ";
-						hwHelpText += "\n :small_blue_diamond: \'show id\' pour montrer les devoirs à faire avec les ids, ";
-						hwHelpText += "\n :small_blue_diamond: \'clean\' pour supprimer les anciens devoirs, ";
-						hwHelpText += "\n :small_blue_diamond: \'delete [id]\' pour supprimer un devoir précis avec son id, ";
-						hwHelpText += "\n :small_blue_diamond: \'add [aaaammjj] [matière] [libellé]\' pour ajouter une date. ";
+						hwHelpText += "Voici les commandes pour gérer les devoirs (à ajouter derrière `!hw`): ";
+						hwHelpText += "\n :small_blue_diamond: `show` pour montrer les devoirs à faire, ";
+						hwHelpText += "\n :small_blue_diamond: `show id` pour montrer les devoirs à faire avec les ids, ";
+						hwHelpText += "\n :small_blue_diamond: `clean` pour supprimer les anciens devoirs, ";
+						hwHelpText += "\n :small_blue_diamond: `delete [id]` pour supprimer un devoir précis avec son id, ";
+						hwHelpText += "\n :small_blue_diamond: `add [aaaammjj] [matière] [libellé]` pour ajouter une date. ";
 						functions.replyToMessage(msg, hwHelpText);
 				}
 				break;
 
-			case 'maketeams':
+			case 1285261448:
 				functions.deleteMessage(msg);
 
 				if (arguments.length < 2) {
-					functions.replyToMessage(msg, ":x: Oups, le nombre d'arguments pour cette commande n'est pas celui attendu. Fais \'!help\' pour voir ?");
+					functions.replyToMessage(msg, ":x: Oups, le nombre d'arguments pour cette commande n'est pas celui attendu. Fais `!help` pour voir ?");
 					break;
 				}
 
@@ -397,7 +396,7 @@ bot.on('message', msg => {
 			// if the command does not exist
 			default:
 				functions.deleteMessage(msg);
-				functions.replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie \'!help\' pour voir ?");
+				functions.replyToMessage(msg, "Hum, la commande " + command + " n'est pas reconnue. Essaie `!help` pour voir ?");
 				break;
 		}
 	}
