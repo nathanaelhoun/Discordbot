@@ -13,29 +13,3 @@ exports.createDbClient = function () {
         ssl: true
     });
 }
-
-/**
- * Get the bot id token
- * 
- * @return {string} 
- */
-exports.getIdToken = function () {
-    return process.env.BOT_TOKEN
-}
-
-/**
- * Get the last bot activity stored in the database
- * 
- * @return {string}
- */
-exports.getLastActivity = function (dbClient) {
-    var sqlQuery = "SELECT * FROM activity ORDER BY id DESC";
-    dbClient.query(sqlQuery, (err, result) => {
-        if (err) throw err;
-
-        if (result.rows[0] != undefined) {
-            return result.rows[0].label;
-        }
-    });
-    return "";
-}

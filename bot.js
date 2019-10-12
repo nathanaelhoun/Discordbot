@@ -9,7 +9,7 @@
 
 // Load functions
 const functions = require('./functions.js');
-const connection = require('./connection.js');
+const connection = require('./connection_local.js');
 const abdessamad = require('./abdessamad_features.js');
 
 // Load the discord.js library
@@ -25,9 +25,18 @@ bot.login(connection.getIdToken());
 
 bot.on('ready', () => {
 	console.log("Je suis vivant !");
-	var activity = connection.getLastActivity(dbClient);
-	bot.user.setActivity(activity);
-	console.log("Activité actuelle : " + activity);
+
+	var activity = "";
+	var sqlQuery = "SELECT * FROM activity ORDER BY id DESC";
+	dbClient.query(sqlQuery, (err, result) => {
+		if (err) throw err;
+
+		if (result.rows[0] != undefined) {
+			activity = result.rows[0].label;
+			bot.user.setActivity(activity);
+		}
+		console.log("Activité actuelle : " + activity);
+	})
 
 	dbClient.connect((err) => {
 		if (err) {
@@ -180,6 +189,46 @@ bot.on('message', msg => {
 				abdessamad.maketeams(msg, numberPerTeam, role);
 				break;
 
+			case 104431: //int
+				functions.deleteMessage(msg);
+				var secondCommand = arguments[0];
+				if (secondCommand == undefined) {
+					secondCommand = "help";
+				} else {
+					secondCommand = secondCommand.toLowerCase();
+				}
+				switch (functions.hashCode(secondCommand)) {
+
+					case functions.hashCode("show"):
+						abdessamad.intshow(msg, dbClient);
+						break;
+
+					case functions.hashCode("add"):
+						var person = msg.mentions.members.first().id;
+						var number = parseInt(arguments[2]);
+						if (person == undefined || number == undefined || isNaN(number)) {
+							functions.replyToMessage(":vs: Les arguments ne sont pas valides, tape `!int help`.");
+							break;
+						}
+						abdessamad.intadd(msg, dbClient, person, number);
+						break;
+
+					case functions.hashCode('help'): // help
+						var commandNotExists = false;
+
+					default:
+						var hwHelpText = "";
+						if (typeof commandNotExists == 'undefined' || commandNotExists) {
+							hwHelpText += "Cette commande n'est pas reconnue.\n";
+						}
+						hwHelpText += "Comment gérer les points de int (à ajouter derrière `!int`): ";
+						hwHelpText += "\n :small_blue_diamond: `show` pour voir le classement, ";
+						hwHelpText += "\n :small_blue_diamond: `add [@personne] [nombre de points]` pour ajouter des points de int à quelqu'un.";
+						functions.replyToMessage(msg, hwHelpText);
+
+
+				}
+				break;
 
 			// if the command does not exist
 			default:

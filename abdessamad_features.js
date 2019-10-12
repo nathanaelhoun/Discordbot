@@ -13,6 +13,7 @@ exports.help = function (msg) {
     helpText += "\n :small_orange_diamond: `!ping` pour jouer au tennis de table, ";
     helpText += "\n :small_orange_diamond: `!setActivity [+texte]` pour choisir l'activité du bot, ";
     helpText += "\n :small_orange_diamond: `!makeTeams [nombre par équipe] [role]` pour faire des équipes avec les membres d'un rôle, ";
+    helpText += "\n :small_orange_diamond: `!int [add / show]` pour interagir avec les points de int, ";
     helpText += "\n :small_orange_diamond: `!hw [+2ème commande]` pour interagir avec les devoirs. ";
     msg.author.send(helpText);
 }
@@ -258,4 +259,92 @@ exports.maketeams = function (msg, numberPerTeam, role) {
     }
 
     functions.replyToMessage(msg, teamsText);
+}
+
+/**
+ * Add 'int' points to a server member 
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ * @param {GuildMember.id} person
+ * @param {int} number
+ */
+exports.intadd = function (msg, dbClient, person, number) {
+    var member = msg.guild.members.find(x => x.user.id == person);
+    if (member == undefined) {
+        functions.replyToMessage(msg, ":x: Il semblerait que la personne menftionnée ne soit pas sur le serveur...");
+        return;
+    }
+
+    var sqlQuery = {
+        text: "SELECT * FROM int_points WHERE int_id =  $1",
+        values: [member.id],
+    };
+    dbClient.query(sqlQuery, (err, resultRaw) => {
+        if (err) throw err;
+
+        console.log(resultRaw);
+        var sqlQuery2 = "";
+        if (resultRaw.rows.length != 0) {
+            var actualPoints = parseInt(resultRaw.rows[0].int_number) + number;
+            sqlQuery2 = {
+                text: "UPDATE int_points SET int_number = $1 WHERE int_id = $2  ",
+                values: [actualPoints, member.id],
+            };
+        } else {
+            sqlQuery2 = {
+                text: "INSERT INTO int_points VALUES($1,$2)",
+                values: [member.id, number],
+            };
+        }
+        dbClient.query(sqlQuery2, (err) => {
+            if (err) throw err;
+
+            if (number > 0) {
+                functions.replyToMessage(msg, "J'ai bien rajouté " + number + " points de int à " + member.displayName + "sur ordre de _" + msg.author.username + "_.");
+            } else {
+                functions.replyToMessage(msg, "J'ai bien retiré " + -number + " points de int à " + member.displayName + "sur ordre de _" + msg.author.username + "_.");
+            }
+        });
+
+    });
+
+}
+
+/**
+ * Display the 'int' points classment
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ */
+exports.intshow = function (msg, dbClient) {
+    var sqlQuery = "SELECT * FROM int_points ORDER BY int_number DESC";
+
+    dbClient.query(sqlQuery, (err, resultRaw) => {
+        if (err) throw err;
+
+        if (resultRaw.rows.length == 0) {
+            functions.replyToMessage(msg, "Rien à afficher. Vous êtes tous des élèves sages. :scream: ");
+            return;
+        }
+
+        var text = ":trophy: Et voici le classement des points de int : ";
+
+        for (var i = 0; i < resultRaw.rows.length; i++) {
+            var member = msg.guild.members.find(x => x.user.id == resultRaw.rows[i].int_id);
+            if (member == undefined) {
+                member = "_(a quitté le serveur)_";
+            } else {
+                member = member.displayName;
+            }
+            text += "\n#" + (i + 1) + " : " + member + " _(" + resultRaw.rows[i].int_number + " point";
+            if (resultRaw.rows[i].int_number != 0) {
+                text += "s";
+            }
+            text += ")_";
+        }
+
+        functions.replyToMessage(msg, text);
+    });
+
 }
