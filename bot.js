@@ -9,7 +9,7 @@
 
 // Load functions
 const functions = require('./functions.js');
-const connection = require('./connection_local.js');
+const connection = require('./connection.js');
 const abdessamad = require('./abdessamad_features.js');
 
 // Load the discord.js library
@@ -106,7 +106,6 @@ bot.on('message', msg => {
 						functions.deleteMessage(msg);
 						abdessamad.hwclean(msg, dbClient);
 						break;
-
 					case functions.hashCode('add'): // Add new homework
 						functions.deleteMessage(msg);
 						var date = arguments[1];
@@ -157,7 +156,7 @@ bot.on('message', msg => {
 				}
 				break;
 
-			case 1285261448: // maketeams
+      case 1285261448: // maketeams
 				functions.deleteMessage(msg);
 
 				if (arguments.length < 2) {
