@@ -1,4 +1,4 @@
-# Abdessamad the Discord bot
+# Abdessamad the gentle Discord bot
 
 <p align="center">A little funny discordbot created in JavaScript. Made par <i>CMI</i> Computer Science Students from Besançon (France)</p>
 <p align="center">
