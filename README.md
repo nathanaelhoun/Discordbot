@@ -20,7 +20,7 @@ Abdessamad can answer to some messages in your conversations in order to make yo
 
 For the moment, Abdessamad is only available on our class server. Try to not cry.
 
-## How to help / Comment aider
+## How to help
 
 Each contributor can add features in the bot.js file or fix some bugs. To find out how to improve the bot, check out the contribution guide. You can also ask for a feature in the [issues page](https://github.com/nathanaelhoun/Discordbot/issues).
 [Visit the Contributing page](CONTRIBUTING.md).
