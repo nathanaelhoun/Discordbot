@@ -270,7 +270,7 @@ exports.maketeams = function (msg, numberPerTeam, role) {
 exports.intadd = function (msg, dbClient, person, number) {
     var member = msg.guild.members.find(x => x.user.id == person);
     if (member == undefined) {
-        functions.replyToMessage(msg, ":x: Il semblerait que la personne menftionnée ne soit pas sur le serveur...");
+        functions.replyToMessage(msg, ":x: Il semblerait que la personne mentionnée ne soit pas sur le serveur...");
         return;
     }
 
@@ -297,11 +297,19 @@ exports.intadd = function (msg, dbClient, person, number) {
         dbClient.query(sqlQuery2, (err) => {
             if (err) throw err;
 
+            var replyString = "";
             if (number > 0) {
-                functions.replyToMessage(msg, "J'ai bien rajouté " + number + " points de int à *" + member.displayName + "* sur ordre de _" + msg.author.username + "_.");
+                replyString += "J'ai bien rajouté ";
             } else {
-                functions.replyToMessage(msg, "J'ai bien retiré " + -number + " points de int à *" + member.displayName + "* sur ordre de _" + msg.author.username + "_.");
+                replyString += "J'ai bien retiré ";
             }
+            replyString += number + " point";
+            if (number != 0 && number != 1 && number != -1) {
+                replyString += "s";
+            }
+            replyString += " de int à *" + member.displayName + "* sur ordre de _" + msg.author.username + "_.";
+            functions.replyToMessage(msg, replyString);
+
         });
 
     });
