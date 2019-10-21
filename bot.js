@@ -153,7 +153,7 @@ bot.on('message', msg => {
 						hwHelpText += "\n :small_blue_diamond: `clean` pour supprimer les anciens devoirs, ";
 						hwHelpText += "\n :small_blue_diamond: `delete [id]` pour supprimer un devoir précis avec son id, ";
 						hwHelpText += "\n :small_blue_diamond: `add [aaaammjj] [matière] [libellé]` pour ajouter une date. ";
-						functions.replyToMessage(msg, hwHelpText);
+						msg.author.send(hwHelpText);
 				}
 				break;
 
@@ -224,9 +224,7 @@ bot.on('message', msg => {
 						hwHelpText += "Comment gérer les points de int (à ajouter derrière `!int`): ";
 						hwHelpText += "\n :small_blue_diamond: `show` pour voir le classement, ";
 						hwHelpText += "\n :small_blue_diamond: `add [@personne] [nombre de points]` pour ajouter des points de int à quelqu'un.";
-						functions.replyToMessage(msg, hwHelpText);
-
-
+						msg.author.send(hwHelpText);
 				}
 				break;
 
