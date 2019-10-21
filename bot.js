@@ -97,16 +97,17 @@ bot.on('message', msg => {
 
 				switch (functions.hashCode(secondCommand)) {
 
-					case functions.hashCode('show'): // Show the homeworks
+					case 3529469: // show : Show the homeworks
 						functions.deleteMessage(msg);
 						abdessamad.hwshow(msg, dbClient, arguments[1] == "id");
 						break;
 
-					case functions.hashCode('clean'): // Delete old homework
+					case 94746185: // clean   Delete old homework
 						functions.deleteMessage(msg);
 						abdessamad.hwclean(msg, dbClient);
 						break;
-					case functions.hashCode('add'): // Add new homework
+
+					case 96417:// add : Add new homework
 						functions.deleteMessage(msg);
 						var date = arguments[1];
 						var subject = arguments[2];
@@ -131,14 +132,14 @@ bot.on('message', msg => {
 						}
 						break;
 
-					case functions.hashCode('delete'): // Delete a precise homework
+					case -1335458389: // delete : Delete a precise homework
 						functions.deleteMessage(msg);
 
 						var id = arguments[1];
 						abdessamad.hwdelete(msg, dbClient, id);
 						break;
 
-					case functions.hashCode('help'): // help
+					case 3198785: // help
 						var commandNotExists = false;
 
 					default:
@@ -156,7 +157,7 @@ bot.on('message', msg => {
 				}
 				break;
 
-      case 1285261448: // maketeams
+			case 1285261448: // maketeams
 				functions.deleteMessage(msg);
 
 				if (arguments.length < 2) {
@@ -198,11 +199,11 @@ bot.on('message', msg => {
 				}
 				switch (functions.hashCode(secondCommand)) {
 
-					case functions.hashCode("show"):
+					case 3529469: // show
 						abdessamad.intshow(msg, dbClient);
 						break;
 
-					case functions.hashCode("add"):
+					case 96417: // add
 						var number = parseInt(arguments[2]);
 						if (msg.mentions.members.first() == undefined || number == undefined || isNaN(number)) {
 							functions.replyToMessage(msg, ":vs: Les arguments ne sont pas valides, tape `!int help`.");
@@ -212,7 +213,7 @@ bot.on('message', msg => {
 						abdessamad.intadd(msg, dbClient, person, number);
 						break;
 
-					case functions.hashCode('help'): // help
+					case 3198785:// help
 						var commandNotExists = false;
 
 					default:
