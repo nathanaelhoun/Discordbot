@@ -13,3 +13,12 @@ exports.createDbClient = function () {
         ssl: true
     });
 }
+
+/**
+ * Get the bot id token
+ * 
+ * @return {string} 
+ */
+exports.getIdToken = function () {
+    return process.env.BOT_TOKEN;
+}
