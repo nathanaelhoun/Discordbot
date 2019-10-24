@@ -335,18 +335,23 @@ exports.intshow = function (msg, dbClient) {
 
         var text = ":trophy: Et voici le classement des points de int : ";
 
-        for (var i = 0; i < resultRaw.rows.length; i++) {
-            var member = msg.guild.members.find(x => x.user.id == resultRaw.rows[i].int_id);
-            if (member == undefined) {
-                member = "_(a quitté le serveur)_";
-            } else {
-                member = member.displayName;
-            }
-            text += "\n#" + (i + 1) + " : " + member + " _(" + resultRaw.rows[i].int_number + " point";
-            if (resultRaw.rows[i].int_number != 0) {
-                text += "s";
-            }
-            text += ")_";
+        var i = 0;
+        while (i < resultRaw.rows.length) {
+            var classment = i + 1;
+            do {
+                var member = msg.guild.members.find(x => x.user.id == resultRaw.rows[i].int_id);
+                if (member == undefined) {
+                    member = "_(a quitté le serveur)_";
+                } else {
+                    member = member.displayName;
+                }
+                text += "\n#" + classment + " : " + member + " _(" + resultRaw.rows[i].int_number + " point";
+                if (resultRaw.rows[i].int_number != 0 && resultRaw.rows[i].int_number != 1 && resultRaw.rows[i].int_number != -1) {
+                    text += "s";
+                }
+                text += ")_";
+                i++;
+            } while (i < resultRaw.rows.length && resultRaw.rows[i - 1].int_number == resultRaw.rows[i].int_number);
         }
 
         functions.replyToMessage(msg, text);
