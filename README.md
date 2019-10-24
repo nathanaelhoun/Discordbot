@@ -12,15 +12,3 @@
 ## About
 
 A bot built with JavaScript to interact with a Discord server. It was created with the aim of discovering a new technologie (discord bots) and practicing JS.
-
-## What can Abdessamad do ?
-Abdessamad can answer to some messages in your conversations in order to make you laugh, but his primary feature is to store and remember you the homework for your class.
-
-## How can I use Abdessamad ?
-
-For the moment, Abdessamad is only available on our class server. Try to not cry.
-
-## How to help
-
-Each contributor can add features in the bot.js file or fix some bugs. To find out how to improve the bot, check out the contribution guide. You can also ask for a feature in the [issues page](https://github.com/nathanaelhoun/Discordbot/issues).
-[Visit the Contributing page](CONTRIBUTING.md).
