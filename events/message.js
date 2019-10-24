@@ -22,6 +22,10 @@ module.exports = (client, dbClient, msg) => {
         var args = functions.getArgsFrom(msg)
 
         switch (command) {
+            case "ping":
+                features.ping(msg)
+                break;
+
             case "activity":
                 if (msg.deletable) msg.delete()
                 if (options.length == 1) {

@@ -26,8 +26,9 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
     switch (reason) {
         case "general":
             text += "** Commandes disponibles : **"
-            text += "\n :small_orange_diamond: `!help` to see this message,"
-            text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` to manage my activity."
+            text += "\n :small_orange_diamond: `!help` pour afficher ce message,"
+            text += "\n :small_orange_diamond: `ping` pour jouer au tennis de table "
+            text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` pour gérer mon activité."
             break
 
         case "activity":

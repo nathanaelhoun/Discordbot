@@ -16,4 +16,5 @@ A bot built with JavaScript to interact with a Discord server. It was created to
 ## Features
 
 - `!help` to see the help menu
-- `!activity [--show_history 'number'] / [--set 'activity']` to manage the bot activity
+- `ping` to play ping-pong with me
+- `!activity [--show_history 'number'] / [--set 'activity']` to manage my activity
