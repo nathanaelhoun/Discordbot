@@ -48,6 +48,26 @@ module.exports = (client, dbClient, msg) => {
                 break;
             // ----------------------------------------------------------------
 
+            case "teams":
+                msg.delete()
+
+                if (args.length != 2 || args[1].substr(0, 2) != '<@') {
+                    msg.author.send(":x: Mauvais arguments.")
+                    features.sendHelp(msg.author, "teams", true)
+                    break
+                }
+
+                var role = msg.guild.roles.find(x => x.id == msg.mentions.roles.first().id)
+                if (role === undefined || role === null) {
+                    msg.author.send(":x: Le rôle *" + roleName + "* n'existe pas sur ce serveur, vérifie l'orthographe.")
+                    features.sendHelp(msg.author, "teams", true)
+                    break
+                }
+
+                features.teams_make(msg, args[0], role)
+                break
+            // ----------------------------------------------------------------
+
             case "help":
                 var hasDoneError = false;
             default:
