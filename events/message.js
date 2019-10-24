@@ -10,7 +10,8 @@
 const functions = require('../functions/message_functions.js');
 const features = require('../functions/message_features.js')
 
-module.exports = (client, message) => {
+module.exports = (client, dbClient, message) => {
+
     if (message.content == "ping") {
         return features.ping(message)
     }
@@ -20,8 +21,8 @@ module.exports = (client, message) => {
         var options = functions.getOptionsFrom(message)
         var args = functions.getArgsFrom(message)
 
-        console.log(command)
-        console.log(options)
-        console.log(args)
+        console.log("Command :" + command)
+        console.log("Options :" + options)
+        console.log("Arguments :" + args)
     }
 }
