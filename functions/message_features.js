@@ -17,6 +17,29 @@ exports.ping = function (message) {
     message.channel.send("Pong :baseball:")
 }
 
+exports.sendHelp = function (recipient, reason, hasDoneError) {
+    var text = "";
+    if (hasDoneError) {
+        text += "Oups, je ne comprends pas ce que tu as voulu dire... Vérifie ça ! \n"
+    }
+
+    switch (reason) {
+        case "general":
+            text += "** Commandes disponibles : **"
+            text += "\n :small_orange_diamond: `!help` to see this message,"
+            text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` to manage my activity."
+            break
+
+        case "activity":
+            text += "** Comment utiliser `!activity` : **"
+            text += "\n :small_orange_diamond: `!activity --show_history 'number'` - vous raconter mes *number* dernières activités, "
+            text += "\n :small_orange_diamond: `!activity --set 'activity'` - me faire faire *activity*."
+            break
+    }
+
+    recipient.send(text)
+}
+
 /**
  * Tell the discord bot activity history
  * @param {Message} msg

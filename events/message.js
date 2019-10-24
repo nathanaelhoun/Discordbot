@@ -23,26 +23,33 @@ module.exports = (client, dbClient, msg) => {
 
         switch (command) {
             case "activity":
-                msg.delete()
-                if (options.length != 1) {
-                    msg.reply(":vs: Cette fonction nécessite une option. ")
-                    break
-                }
-
-                if (options[0] == 'show_history') {
-                    if (typeof (args[0]) != "string") {
-                        msg.reply(":vs: Il faut me dire combien d'activités je suis censé me rappeler !")
+                if (msg.deletable) msg.delete()
+                if (options.length == 1) {
+                    if (options[0] == 'show_history') {
+                        if (typeof (args[0]) != "string") {
+                            msg.reply(":vs: Il faut me dire combien d'activités je suis censé me rappeler !")
+                            break
+                        }
+                        features.activity_showHistory(msg, dbClient, parseInt(args[0]))
                         break
                     }
-                    features.activity_showHistory(msg, dbClient, parseInt(args[0]))
-                    break
-                }
 
-                if (options[0] == 'set') {
-                    features.activity_set(msg, client, dbClient, args.join(' '))
+                    if (options[0] == 'set') {
+                        features.activity_set(msg, client, dbClient, args.join(' '))
+                        break
+                    }
                 }
+                // Syntax error
+                features.sendHelp(msg.author, "activity", true)
+                break;
+            // ----------------------------------------------------------------
 
+            case "help":
+                var hasDoneError = false;
             default:
+                features.sendHelp(msg.author, "general", (hasDoneError === undefined))
+                if (msg.deletable) msg.delete()
+            // ----------------------------------------------------------------
         }
     }
 }
