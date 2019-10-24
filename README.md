@@ -11,4 +11,4 @@
 
 ## About
 
-A bot built with JavaScript to interact with a Discord server. It was created with the aim of discovering a new technologie (discord bots) and practicing JS.
+A bot built with JavaScript to interact with a Discord server. It was created to discover discordbots and practise JS.
