@@ -1,3 +1,11 @@
+/**
+ * Abdessamad, the gentle discord bot
+ * Created to interact in discord class groups.
+ * 
+ * @version 2.0
+ * @author Nathanaël Houn
+ * @author Promo 2018 des CMI Informatique de Besançon
+ */
 
 /**
  * Export the first word in lowercase of a string without its prefix

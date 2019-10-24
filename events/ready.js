@@ -22,11 +22,11 @@ module.exports = (client, dbClient) => {
         } else {
 
             console.log("Connected to the database successfully.")
-            dbClient.query("SELECT * FROM activity ORDER BY id DESC", (err, result) => {
+            dbClient.query("SELECT * FROM bot_activity ORDER BY act_id DESC", (err, result) => {
                 if (err) throw err
 
                 if (result.rows[0] != undefined) {
-                    activity = result.rows[0].label
+                    activity = result.rows[0].act_label
                     client.user.setActivity(activity)
                 }
                 console.log("Current activity : " + activity)

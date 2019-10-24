@@ -12,3 +12,7 @@
 ## About
 
 A bot built with JavaScript to interact with a Discord server. It was created to discover discordbots and practise JS.
+
+## Features
+
+- `!activity [--show_history 'number'] / [--set 'activity']`
