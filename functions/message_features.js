@@ -41,6 +41,7 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!int --add '@person' false 'number>0'` pour ajouter *number* points de int non justifiés à *@person*"
             text += "\n :small_orange_diamond: `!int --remove '@person' true 'number>0'` pour retirer *number* points de int justifiés à *@person*"
             text += "\n :small_orange_diamond: `!int --remove '@person' false 'number>0'` pour retirer *number* points de int non justifiés à *@person*"
+            text += "\n :small_orange_diamond: `!int --show [--justified/--unjustified]` pour afficher le classement global/justifié/non justifié"
             break
 
         case "general":
@@ -49,7 +50,8 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!help` pour afficher ce message,"
             text += "\n :small_orange_diamond: `ping` pour jouer au tennis de table "
             text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` pour gérer mon activité,"
-            text += " \n :small_orange_diamond: `!teams ['number'] ['@role']` pour faire des équipes avec les membres d'un rôle. "
+            text += "\n :small_orange_diamond: `!teams ['number'] ['@role']` pour faire des équipes avec les membres d'un rôle, "
+            text += "\n :small_orange_diamond: `!int --add/--rm/--show ['@role'] [true/false] ['number']` pour gérer les points de int. "
     }
 
     recipient.send(text)
@@ -201,7 +203,7 @@ exports.intadd = function (msg, dbClient, user, points, isJustified) {
  * @param {Message} msg
  * @param {Client} dbClient
  */
-exports.intshowall = function (msg, dbClient) {
+exports.intshowAll = function (msg, dbClient) {
     var sqlQuery = "SELECT * FROM int_points ORDER BY int_justified_points+int_unjustified_points DESC"
 
     dbClient.query(sqlQuery, (err, result) => {
@@ -212,7 +214,7 @@ exports.intshowall = function (msg, dbClient) {
             return
         }
 
-        var text = ":trophy: Et voici le classement global des points de int : "
+        var text = ":trophy: Et voici le classement **global** des points de int : "
         var i = 0
         while (i < result.rowCount) {
             var classment = i + 1
@@ -232,6 +234,86 @@ exports.intshowall = function (msg, dbClient) {
                 text += ")_"
                 i++
             } while (i < result.rows.length && result.rows[i - 1].int_justified_points + result.rows[i - 1].int_unjustified_points == result.rows[i].int_justified_points + result.rows[i].int_unjustified_points)
+        }
+
+        msg.channel.send(text)
+    })
+}
+
+/**
+ * Display the justified 'int' points classment 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ */
+exports.intshowJustified = function (msg, dbClient) {
+    var sqlQuery = "SELECT * FROM int_points ORDER BY int_justified_points DESC"
+
+    dbClient.query(sqlQuery, (err, result) => {
+        if (err) throw err
+
+        if (result.rowCount == 0) {
+            msg.channel.send("Rien à afficher. Vous êtes tous des élèves sages. :scream: ")
+            return
+        }
+
+        var text = ":trophy: Et voici le classement des points de int **justifiés** : "
+        var i = 0
+        while (i < result.rowCount) {
+            var classment = i + 1
+            do {
+                var member = msg.guild.members.find(x => x.user.id == result.rows[i].int_player_id)
+                if (member == undefined) {
+                    member = "_(a quitté le serveur)_"
+                } else {
+                    member = member.displayName
+                }
+                text += "\n#" + classment + " : " + member + " _(" + result.rows[i].int_justified_points + " point"
+                if (result.rows[i].int_justified_points != 0 && result.rows[i].int_justified_points != 1 && result.rows[i].int_justified_points != -1) {
+                    text += "s"
+                }
+                text += ")_"
+                i++
+            } while (i < result.rows.length && result.rows[i - 1].int_justified_points == result.rows[i].int_justified_points)
+        }
+
+        msg.channel.send(text)
+    })
+}
+
+/**
+ * Display the unjustified 'int' points classment 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ */
+exports.intshowUnjustified = function (msg, dbClient) {
+    var sqlQuery = "SELECT * FROM int_points ORDER BY int_unjustified_points DESC"
+
+    dbClient.query(sqlQuery, (err, result) => {
+        if (err) throw err
+
+        if (result.rowCount == 0) {
+            msg.channel.send("Rien à afficher. Vous êtes tous des élèves sages. :scream: ")
+            return
+        }
+
+        var text = ":trophy: Et voici le classement des points de int **non justifiés** : "
+        var i = 0
+        while (i < result.rowCount) {
+            var classment = i + 1
+            do {
+                var member = msg.guild.members.find(x => x.user.id == result.rows[i].int_player_id)
+                if (member == undefined) {
+                    member = "_(a quitté le serveur)_"
+                } else {
+                    member = member.displayName
+                }
+                text += "\n#" + classment + " : " + member + " _(" + result.rows[i].int_unjustified_points + " point"
+                if (result.rows[i].int_unjustified_points != 0 && result.rows[i].int_unjustified_points != 1 && result.rows[i].int_unjustified_points != -1) {
+                    text += "s"
+                }
+                text += ")_"
+                i++
+            } while (i < result.rows.length && result.rows[i - 1].int_unjustified_points == result.rows[i].int_unjustified_points)
         }
 
         msg.channel.send(text)

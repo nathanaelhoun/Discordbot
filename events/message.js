@@ -93,9 +93,13 @@ module.exports = (client, dbClient, msg) => {
                     features.intadd(msg, dbClient, user, points, isJustified)
                 } else if (options[0] == "show") {
                     if (options.length == 1) {
-                        features.intshowall(msg, dbClient)
+                        features.intshowAll(msg, dbClient)
                     } else {
-
+                        if (options[1] == "justified") {
+                            features.intshowJustified(msg, dbClient)
+                        } else {
+                            features.intshowUnjustified(msg, dbClient)
+                        }
                     }
                 }
 
@@ -103,9 +107,17 @@ module.exports = (client, dbClient, msg) => {
             // ----------------------------------------------------------------
 
             case "help":
-                var hasDoneError = false;
+                var hasDoneError = false
+                if (args.length > 0) {
+                    var type = args[0]
+                }
+
             default:
-                features.sendHelp(msg.author, "general", (hasDoneError === undefined))
+                if (type === undefined) {
+                    type = "general"
+                }
+
+                features.sendHelp(msg.author, type, (hasDoneError === undefined))
                 if (msg.deletable) msg.delete()
             // ----------------------------------------------------------------
         }
