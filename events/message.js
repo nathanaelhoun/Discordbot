@@ -29,7 +29,7 @@ module.exports = (client, dbClient, msg) => {
             case "activity":
                 if (msg.deletable) msg.delete()
                 if (options.length == 1) {
-                    if (options[0] == 'show_history') {
+                    if (options[0] == "show_history") {
                         if (typeof (args[0]) != "string") {
                             msg.reply(":vs: Il faut me dire combien d'activités je suis censé me rappeler !")
                             break
@@ -49,7 +49,7 @@ module.exports = (client, dbClient, msg) => {
             // ----------------------------------------------------------------
 
             case "teams":
-                msg.delete()
+                if (msg.deletable) msg.delete()
 
                 if (args.length != 2 || args[1].substr(0, 2) != '<@') {
                     msg.author.send(":x: Mauvais arguments.")
@@ -65,6 +65,40 @@ module.exports = (client, dbClient, msg) => {
                 }
 
                 features.teams_make(msg, args[0], role)
+                break
+            // ----------------------------------------------------------------
+
+            case "int":
+                if (msg.deletable) msg.delete()
+
+                if (options.length > 2) {
+                    msg.author.send(":x: Mauvaise option.")
+                    features.sendHelp(msg.author, "int", true)
+                    break
+                }
+
+                if (options[0] == "add" || options[0] == "remove") {
+                    if (options.length != 1 || args.length != 3 || args[0].substr(0, 2) != '<@' || isNaN(args[2])) {
+                        msg.author.send(":x: Mauvais arguments.")
+                        features.sendHelp(msg.author, "int", true)
+                        break
+                    }
+
+                    let user = msg.mentions.members.first()
+                    let isJustified = args[1].toLowerCase() == "true"
+                    var points = parseInt(args[2])
+                    if (options[0] == "remove") {
+                        points *= -1
+                    }
+                    features.intadd(msg, dbClient, user, points, isJustified)
+                } else if (options[0] == "show") {
+                    if (options.length == 1) {
+                        features.intshowall(msg, dbClient)
+                    } else {
+
+                    }
+                }
+
                 break
             // ----------------------------------------------------------------
 

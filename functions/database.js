@@ -28,3 +28,50 @@ exports.activity_push = function (dbClient, label) {
         if (err) throw err
     })
 }
+
+exports.intpoints_add = function (dbClient, player, number, isJustified) {
+    var sqlQuery = {
+        text: "SELECT * FROM int_points WHERE int_player_id = $1",
+        values: [player.id]
+    }
+
+    dbClient.query(sqlQuery, (err, result) => {
+        if (err) throw err
+
+        var sqlQuery2 = ""
+
+        if (result.rowCount != 0) {
+            var actualPoints = 0
+
+            if (isJustified) {
+                actualPoints = parseInt(result.rows[0].int_justified_points) + number
+                sqlQuery2 = {
+                    text: "UPDATE int_points SET int_justified_points = $1 WHERE int_player_id = $2",
+                    values: [actualPoints, player.id],
+                }
+            } else {
+                actualPoints = parseInt(result.rows[0].int_unjustified_points) + number
+                sqlQuery2 = {
+                    text: "UPDATE int_points SET int_unjustified_points = $1 WHERE int_player_id = $2",
+                    values: [actualPoints, player.id],
+                }
+            }
+        } else {
+            if (isJustified) {
+                sqlQuery2 = {
+                    text: "INSERT INTO int_points VALUES($1,$2,0)",
+                    values: [player.id, number],
+                }
+            } else {
+                sqlQuery2 = {
+                    text: "INSERT INTO int_points VALUES($1,0,$2)",
+                    values: [player.id, number],
+                }
+            }
+        }
+
+        dbClient.query(sqlQuery2, (err) => {
+            if (err) throw err;
+        })
+    })
+}
