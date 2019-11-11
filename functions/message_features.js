@@ -30,11 +30,6 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!activity --set 'activity'` - me faire faire *activity*."
             break
 
-        case "teams":
-            text += "** Comment utiliser `!teams` : **"
-            text += "\n :small_orange_diamond: `!teams 'number' '@role'` pour faire des équipes avec les membres d'un rôle."
-            break
-
         case "int":
             text += "** Comment utiliser `!int` : **"
             text += "\n :small_orange_diamond: `!int --add '@person' true 'number>0'` pour ajouter *number* points de int justifiés à *@person*"
@@ -42,6 +37,11 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!int --remove '@person' true 'number>0'` pour retirer *number* points de int justifiés à *@person*"
             text += "\n :small_orange_diamond: `!int --remove '@person' false 'number>0'` pour retirer *number* points de int non justifiés à *@person*"
             text += "\n :small_orange_diamond: `!int --show [--justified/--unjustified]` pour afficher le classement global/justifié/non justifié"
+            break
+
+        case "teams":
+            text += "** Comment utiliser `!teams` : **"
+            text += "\n :small_orange_diamond: `!teams 'number' '@role'` pour faire des équipes avec les membres d'un rôle."
             break
 
         case "general":
