@@ -29,6 +29,16 @@ exports.activity_push = function (dbClient, label) {
     })
 }
 
+exports.hw_push = function (dbClient, type, subject, date, label) {
+    var sqlQuery = {
+        text: 'INSERT INTO homework(hom_type, hom_date, hom_subject, hom_label) VALUES ($1, $2, $3, $4);',
+        values: [type, date, subject, label],
+    }
+    dbClient.query(sqlQuery, (err, res) => {
+        if (err) throw err
+    })
+}
+
 exports.intpoints_add = function (dbClient, player, number, isJustified) {
     var sqlQuery = {
         text: "SELECT * FROM int_points WHERE int_player_id = $1",

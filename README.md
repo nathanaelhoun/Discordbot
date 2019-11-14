@@ -18,4 +18,5 @@ A bot built with JavaScript to interact with a Discord server. It was created to
 - `!help` to see the help menu
 - `ping` to play ping-pong with me
 - `!activity [--show_history 'number'] / [--set 'activity']` to manage my activity
+- `!hw --add / --show / --rm` to manage the homeworks
 - `!teams ['number'] ['@role']` to make random teams with the role's members

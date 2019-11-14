@@ -8,6 +8,7 @@
  */
 
 const db = require('./database.js')
+const functions = require('./message_functions.js')
 
 /**
  * Answer "pong" to "ping"
@@ -23,11 +24,27 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
         text += "Je n'ai pas compris ce que tu as voulu dire... Vérifie ça :wink: \n"
     }
 
+    let hwText = "** Comment utiliser `!hw` : ** \n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet \n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs"
+
     switch (reason) {
         case "activity":
             text += "** Comment utiliser `!activity` : **"
             text += "\n :small_orange_diamond: `!activity --show_history 'number'` - vous raconter mes *number* dernières activités, "
             text += "\n :small_orange_diamond: `!activity --set 'activity'` - me faire faire *activity*."
+            break
+
+        case "hwDate":
+            text += "Il semblerait que la date ne soit pas au bon format. Il faut l'entrer au format `jj/mm/aa` ou `jj/mm/aaaa`\n"
+            text += hwText
+            break
+
+        case "hwArgs":
+            text += "Woops, il semblerait qu'il n'y ait pas le bon nombre d'arguments.\n"
+            text += hwText
+            break
+
+        case "hw":
+            text += hwText
             break
 
         case "int":
@@ -163,6 +180,188 @@ exports.teams_make = function (msg, numberPerTeam, role) {
     }
 
     msg.channel.send(teamsText)
+}
+
+/**
+ * Add homework
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ * @param {Homework} homework
+ * @param {int} date
+ * @param {string} subject
+ * @param {string} label
+ */
+exports.hwadd = function (msg, dbClient, hw) {
+    switch (hw.type) {
+        case "hw":
+            hw.type = 1
+            break
+
+        case "ds":
+            hw.type = 2
+            break
+
+        case "project":
+            hw.type = 3
+            break
+
+        default:
+            hw.type = 0
+    }
+
+    db.hw_push(dbClient, hw.type, hw.subject, hw.date, hw.label)
+    msg.reply("J'ai bien ajouté à ma base de données : " + functions.homework2string(hw))
+}
+
+/**
+ * Clean the table by deleting the old homeworks
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ */
+exports.hwclean = function (msg, dbClient) {
+    var deletedElementsNumber = 0;
+
+    var sqlQuery = "SELECT COUNT(id) AS number FROM homework WHERE date < NOW()::DATE";
+    dbClient.query(sqlQuery, (err, result) => {
+        if (err) {
+            functions.replyToMessage(msg, ":x: Impossible de nettoyer ma mémoire, merci de vérifier mon code :thinking: ");
+            throw err;
+        } else {
+            deletedElementsNumber = result.rows[0].number;
+
+            if (deletedElementsNumber > 0) {
+                var sqlQuery = "DELETE FROM homework WHERE date < NOW()::DATE";
+                dbClient.query(sqlQuery, (err, result) => {
+                    if (err) throw err;
+                });
+            }
+
+            switch (deletedElementsNumber) { // Send a message with the number of deleted homeworks
+                case "0":
+                    functions.replyToMessage(msg, ":ballot_box_with_check: Pas d'ancien devoir à supprimer mais merci de vous soucier de ma mémoire :smile: ");
+                    break;
+
+                case "1":
+                    functions.replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé un ancien devoir. ");
+                    break;
+
+                default:
+                    functions.replyToMessage(msg, ":ballot_box_with_check: J'ai bien supprimé " + deletedElementsNumber + " vieux devoirs. ");
+            }
+        }
+    });
+}
+
+/**
+ * Delete a homework from the table
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ * @param {int} hwId
+ */
+exports.hwdelete = function (msg, dbClient, hwId) {
+    var deletedHomework;
+    if (isNaN(hwId)) {
+        functions.replyToMessage(msg, ":vs: Aucun indice n'a été rentré ");
+        return;
+    }
+
+    var sqlQuery = { // Get the homework that will be deleted
+        text: "SELECT id, TO_CHAR(date, 'dd/mm/yyyy') AS formateddate, subject, description FROM homework WHERE id = $1",
+        values: [hwId],
+    }
+
+    dbClient.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.log(err.stack);
+            functions.replyToMessage(msg, ":x: Impossible de supprimer ce devoir, il semble ne pas exister")
+        } else {
+            deletedHomework = result.rows[0];
+
+            if (deletedHomework != undefined) {
+                // Delete the homework if it exists
+                sqlQuery = {
+                    text: 'DELETE FROM homework WHERE id = $1',
+                    values: [hwId],
+                }
+                dbClient.query(sqlQuery, (err, result) => {
+                    if (err) throw err;
+                });
+
+                functions.replyToMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + functions.homework2string(deletedHomework) + " ");
+            } else {
+                functions.replyToMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
+            }
+        }
+    });
+}
+
+/**
+ * Display the homeworks to do
+ * 
+ * @param {Message} msg
+ * @param {Client} dbClient
+ * @param {boolean} showIDs true to show the homework ids
+ * @param {int} whichOnes
+ */
+exports.hwshow = function (msg, dbClient, showIDs, whichOnes) {
+    var homeworksText = ""
+
+    //Query the database
+    var sqlQuery = "SELECT hom_id AS id, hom_type AS type, TO_CHAR(hom_date, 'yyyymmdd') AS date, hom_subject AS subject, hom_label AS label FROM homework WHERE hom_date >= NOW()::DATE ORDER BY hom_type, hom_date, hom_subject"
+
+    if (whichOnes == 1 || whichOnes == 2 || whichOnes == 3) {
+        sqlQuery = "SELECT hom_id AS id, hom_type AS type, TO_CHAR(hom_date, 'yyyymmdd') AS date, hom_subject AS subject, hom_label AS label FROM homework WHERE hom_date >= NOW()::DATE AND hom_type = " + whichOnes + " ORDER BY hom_type, hom_date, hom_subject"
+    }
+
+    dbClient.query(sqlQuery, (err, res) => {
+        if (err) throw err
+
+        // Construct the message
+        if (res.rowCount == 0) {
+            switch (whichOnes) {
+                case 1:
+                    homeworksText = "Aucun exercice prévu, plutôt cool non ? :happy: "
+                    break
+                case 2:
+                    homeworksText = "Pas de DS de prévu, mais ce n'est qu'une question de temps :watch: "
+                    break
+                case 3:
+                    homeworksText = "Pour l'instant, aucun project à l'horizon :partying_face: "
+                    break
+                default:
+                    homeworksText = "Étrange... Pas de devoirs :thinking: "
+            }
+        } else {
+            switch (whichOnes) {
+                case 1:
+                    homeworksText = ":blue_book: Voici les exercices à faire, bon courage : "
+                    break
+                case 2:
+                    homeworksText = ":blue_book: Oula, va falloir réviser : "
+                    break
+                case 3:
+                    homeworksText = ":blue_book: *Project time !* : "
+                    break
+                default:
+                    homeworksText = ":blue_book: Voici tout ce qu'il y a à faire, bon courage : "
+            }
+
+            for (var i = 0; i < res.rowCount; i++) {
+                let text = functions.homework2string(res.rows[i])
+
+                // Add the IDs
+                if (showIDs) {
+                    text += " (" + res.rows[i].id + ") "
+                }
+
+                homeworksText += "\n" + text
+            }
+        }
+        msg.reply(homeworksText)
+    });
 }
 
 /**

@@ -41,7 +41,78 @@ module.exports = (client, dbClient, msg) => {
                 }
                 // Syntax error
                 features.sendHelp(msg.author, "activity", true)
-                break;
+                break
+            // ----------------------------------------------------------------
+
+            case "hw":
+                if (msg.deletable) msg.delete()
+                if (options.length < 1 || 2 < options.length) {
+                    features.sendHelp(msg.author, "hw", true)
+                    break
+                }
+
+                if (options.length == 2) {
+                    if (options[0] != "show") {
+                        features.sendHelp(msg.author, "hw", true)
+                        break
+                    }
+                    features.hwshow(msg, dbClient, true)
+                    break
+                }
+
+                switch (options[0]) {
+                    case "add":
+                        if (args.length < 4) {
+                            features.sendHelp(msg.author, "hwArgs", true)
+                            break
+                        }
+                        let homework = {
+                            "type": args[0],
+                            "date": functions.string2date(args[1]),
+                            "subject": args[2],
+                            "label": args[3]
+                        }
+                        for (let i = 4; i < args.length; i++) {
+                            homework.label += ' ' + args[i];
+                        }
+
+                        if (!functions.isDateCorrect(homework.date)) {
+                            features.sendHelp(msg.author, "hwDate", true)
+                            break
+                        }
+                        features.hwadd(msg, dbClient, homework)
+                        break
+
+                    case "rm":
+                        break
+
+                    case "show":
+                        let showIds = options[1] == "ids" || options[1] == "id" || options[2] == "ids" || options[2] == "id"
+
+                        var whichOne = 0;
+                        if (args.length > 0) {
+                            switch (args[0]) {
+                                case "hw":
+                                    whichOne = 1
+                                    break
+
+                                case "ds":
+                                    whichOne = 2
+                                    break
+
+                                case "project":
+                                    whichOne = 3
+                                    break
+                            }
+                        }
+                        features.hwshow(msg, dbClient, showIds, whichOne)
+                        break
+
+                    default:
+                        features.sendHelp(msg.author, "hw", options[0] != "help")
+                }
+
+                break
             // ----------------------------------------------------------------
 
             case "int":
