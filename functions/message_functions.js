@@ -109,10 +109,13 @@ exports.isDateCorrect = function (dateInt) {
  * @return {string} the date
  */
 exports.string2date = function (dateString) {
-    let day = dateString.substring(0, 2)
-    let month = dateString.substring(3, 5)
-    let year = dateString.substring(6, 8)
-    let year2 = dateString.substring(8, 10)
+    if(dateString.substr(2,1) != '/' || dateString.substr(5,1) != '/' ) {
+        return 00001360; // wrong day
+    }
+    let day = dateString.substr(0, 2)
+    let month = dateString.substr(3, 2)
+    let year = dateString.substr(6, 2)
+    let year2 = dateString.substr(8, 2)
     if (year2 != "") {
         year = year + year2
     } else {

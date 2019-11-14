@@ -24,8 +24,6 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
         text += "Je n'ai pas compris ce que tu as voulu dire... Vérifie ça :wink: \n"
     }
 
-    let hwText = "** Comment utiliser `!hw` : ** \n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet, \n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs, \n :small_orange_diamond: `!hw --rm 'id'` pour supprimer un devoir."
-
     switch (reason) {
         case "activity":
             text += "** Comment utiliser `!activity` : **"
@@ -33,18 +31,11 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!activity --set 'activity'` - me faire faire *activity*."
             break
 
-        case "hwDate":
-            text += "Il semblerait que la date ne soit pas au bon format. Il faut l'entrer au format `jj/mm/aa` ou `jj/mm/aaaa`\n"
-            text += hwText
-            break
-
-        case "hwArgs":
-            text += "Woops, il semblerait qu'il n'y ait pas le bon nombre d'arguments.\n"
-            text += hwText
-            break
-
         case "hw":
-            text += hwText
+            text +=  "** Comment utiliser `!hw` : **" 
+            text += "\n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet," 
+            text += "\n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs," 
+            text += "\n :small_orange_diamond: `!hw --rm 'id'` pour supprimer un devoir."
             break
 
         case "int":

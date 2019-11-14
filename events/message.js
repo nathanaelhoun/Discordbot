@@ -63,7 +63,8 @@ module.exports = (client, dbClient, msg) => {
                 switch (options[0]) {
                     case "add":
                         if (args.length < 4) {
-                            features.sendHelp(msg.author, "hwArgs", true)
+                            msg.author.send(":x: Woops, il semblerait qu'il n'y ait pas le bon nombre d'arguments.")
+                            features.sendHelp(msg.author, "hw", true)
                             break
                         }
                         let homework = {
@@ -77,7 +78,8 @@ module.exports = (client, dbClient, msg) => {
                         }
 
                         if (!functions.isDateCorrect(homework.date)) {
-                            features.sendHelp(msg.author, "hwDate", true)
+                            msg.author.send(":x: Il semblerait que la date ne soit pas au bon format. Il faut l'entrer au format `jj/mm/aa` ou `jj/mm/aaaa`")
+                            features.sendHelp(msg.author, "hw", true)
                             break
                         }
                         features.hwadd(msg, dbClient, homework)
@@ -123,7 +125,7 @@ module.exports = (client, dbClient, msg) => {
             case "int":
                 if (msg.deletable) msg.delete()
 
-                if (options.length > 2) {
+                if (options.length > 2 || options.length < 1) {
                     msg.author.send(":x: Mauvaise option.")
                     features.sendHelp(msg.author, "int", true)
                     break
@@ -153,6 +155,9 @@ module.exports = (client, dbClient, msg) => {
                             features.intshowUnjustified(msg, dbClient)
                         }
                     }
+                } else {
+                    msg.author.send(":x: Mauvaise option.")
+                    features.sendHelp(msg.author, "int", true)
                 }
 
                 break
