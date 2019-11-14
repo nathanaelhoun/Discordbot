@@ -67,8 +67,10 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "\n :small_orange_diamond: `!help` pour afficher ce message,"
             text += "\n :small_orange_diamond: `ping` pour jouer au tennis de table "
             text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` pour gérer mon activité,"
-            text += "\n :small_orange_diamond: `!teams ['number'] ['@role']` pour faire des équipes avec les membres d'un rôle, "
-            text += "\n :small_orange_diamond: `!int --add/--rm/--show ['@role'] [true/false] ['number']` pour gérer les points de int. "
+            text += "\n :small_orange_diamond: `!hw --add/--rm/--show` pour gérer les devoirs, "
+
+            text += "\n :small_orange_diamond: `!int --add/--rm/--show ['@role'] [true/false] ['number']` pour gérer les points de int, "
+            text += "\n :small_orange_diamond: `!teams ['number'] ['@role']` pour faire des équipes avec les membres d'un rôle. "
     }
 
     recipient.send(text)
