@@ -1,5 +1,1 @@
-## Login file
-auth.json
-localconfig.txt
-*.code-workspace
-connection_local.js
+.env
