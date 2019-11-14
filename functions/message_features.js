@@ -24,7 +24,7 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
         text += "Je n'ai pas compris ce que tu as voulu dire... Vérifie ça :wink: \n"
     }
 
-    let hwText = "** Comment utiliser `!hw` : ** \n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet \n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs"
+    let hwText = "** Comment utiliser `!hw` : ** \n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet, \n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs, \n :small_orange_diamond: `!hw --rm 'id'` pour supprimer un devoir."
 
     switch (reason) {
         case "activity":
@@ -269,30 +269,30 @@ exports.hwdelete = function (msg, dbClient, hwId) {
     }
 
     var sqlQuery = { // Get the homework that will be deleted
-        text: "SELECT id, TO_CHAR(date, 'dd/mm/yyyy') AS formateddate, subject, description FROM homework WHERE id = $1",
+        text: "SELECT hom_id AS id, hom_type AS type, TO_CHAR(hom_date, 'yyyymmdd') AS date, hom_subject AS subject, hom_label AS label FROM homework WHERE hom_id = $1",
         values: [hwId],
     }
 
     dbClient.query(sqlQuery, (err, result) => {
         if (err) {
             console.log(err.stack);
-            functions.replyToMessage(msg, ":x: Impossible de supprimer ce devoir, il semble ne pas exister")
+            msg.reply(":x: Impossible de supprimer ce devoir, il semble ne pas exister")
         } else {
             deletedHomework = result.rows[0];
 
             if (deletedHomework != undefined) {
                 // Delete the homework if it exists
                 sqlQuery = {
-                    text: 'DELETE FROM homework WHERE id = $1',
+                    text: 'DELETE FROM homework WHERE hom_id = $1',
                     values: [hwId],
                 }
                 dbClient.query(sqlQuery, (err, result) => {
                     if (err) throw err;
                 });
 
-                functions.replyToMessage(msg, ":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + functions.homework2string(deletedHomework) + " ");
+                msg.reply(":zipper_mouth: Sur ordre de " + msg.author.username + ", j'ai bien supprimé le devoir : " + functions.homework2string(deletedHomework) + " ");
             } else {
-                functions.replyToMessage(msg, ":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
+                msg.reply(":vs: L'indice entré ne correspond à aucun devoir enregistré. ");
             }
         }
     });

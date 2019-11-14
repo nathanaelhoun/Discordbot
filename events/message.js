@@ -84,6 +84,11 @@ module.exports = (client, dbClient, msg) => {
                         break
 
                     case "rm":
+                        if (args.length != 1 || options.length != 1) {
+                            features.sendHelp(msg.author, "hw", true)
+                            break
+                        }
+                        features.hwdelete(msg,dbClient,args[0])
                         break
 
                     case "show":
