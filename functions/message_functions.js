@@ -24,8 +24,8 @@ exports.getCommandFrom = function (message) {
 exports.getOptionsFrom = function (message) {
     var options = []
     message.content.substring(1).split(' ').forEach(word => {
-        if (word.substring(0, 2) == "--") {
-            options.push(word.substring(2).toLowerCase())
+        if (word.substring(0, 1) == "&") {
+            options.push(word.substring(1).toLowerCase())
         }
     })
     return options
@@ -39,7 +39,7 @@ exports.getOptionsFrom = function (message) {
 exports.getArgsFrom = function (message) {
     var args = []
     message.content.split(' ').forEach(word => {
-        if (word.substring(0, 1) != "-" && word.substring(0, 1) != '!') {
+        if (word.substring(0, 1) != "&" && word.substring(0, 1) != '!') {
             args.push(word)
         }
     })

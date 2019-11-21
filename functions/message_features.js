@@ -27,24 +27,24 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
     switch (reason) {
         case "activity":
             text += "** Comment utiliser `!activity` : **"
-            text += "\n :small_orange_diamond: `!activity --show_history 'number'` - vous raconter mes *number* dernières activités, "
-            text += "\n :small_orange_diamond: `!activity --set 'activity'` - me faire faire *activity*."
+            text += "\n :small_orange_diamond: `!activity &show_history 'number'` - vous raconter mes *number* dernières activités, "
+            text += "\n :small_orange_diamond: `!activity &set 'activity'` - me faire faire *activity*."
             break
 
         case "hw":
             text +=  "** Comment utiliser `!hw` : **" 
-            text += "\n :small_orange_diamond: `!hw --add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet," 
-            text += "\n :small_orange_diamond: `!hw --show [hw/ds/project] [--ids]` pour voir les devoirs," 
-            text += "\n :small_orange_diamond: `!hw --rm 'id'` pour supprimer un devoir."
+            text += "\n :small_orange_diamond: `!hw &add hw/ds/project dd/mm/yy matière libellé` pour ajouter des devoirs, un DS ou un projet," 
+            text += "\n :small_orange_diamond: `!hw &show [hw/ds/project] [&ids]` pour voir les devoirs," 
+            text += "\n :small_orange_diamond: `!hw &rm 'id'` pour supprimer un devoir."
             break
 
         case "int":
             text += "** Comment utiliser `!int` : **"
-            text += "\n :small_orange_diamond: `!int --add '@person' true 'number>0'` pour ajouter *number* points de int justifiés à *@person*"
-            text += "\n :small_orange_diamond: `!int --add '@person' false 'number>0'` pour ajouter *number* points de int non justifiés à *@person*"
-            text += "\n :small_orange_diamond: `!int --remove '@person' true 'number>0'` pour retirer *number* points de int justifiés à *@person*"
-            text += "\n :small_orange_diamond: `!int --remove '@person' false 'number>0'` pour retirer *number* points de int non justifiés à *@person*"
-            text += "\n :small_orange_diamond: `!int --show [--justified/--unjustified]` pour afficher le classement global/justifié/non justifié"
+            text += "\n :small_orange_diamond: `!int &add '@person' true 'number>0'` pour ajouter *number* points de int justifiés à *@person*"
+            text += "\n :small_orange_diamond: `!int &add '@person' false 'number>0'` pour ajouter *number* points de int non justifiés à *@person*"
+            text += "\n :small_orange_diamond: `!int &remove '@person' true 'number>0'` pour retirer *number* points de int justifiés à *@person*"
+            text += "\n :small_orange_diamond: `!int &remove '@person' false 'number>0'` pour retirer *number* points de int non justifiés à *@person*"
+            text += "\n :small_orange_diamond: `!int &show [&justified/&unjustified]` pour afficher le classement global/justifié/non justifié"
             break
 
         case "teams":
@@ -57,10 +57,10 @@ exports.sendHelp = function (recipient, reason, hasDoneError) {
             text += "** Commandes disponibles : **"
             text += "\n :small_orange_diamond: `!help` pour afficher ce message,"
             text += "\n :small_orange_diamond: `ping` pour jouer au tennis de table "
-            text += "\n :small_orange_diamond: `!activity [--show_history 'number'] / [--set 'activity']` pour gérer mon activité,"
-            text += "\n :small_orange_diamond: `!hw --add/--rm/--show` pour gérer les devoirs, "
+            text += "\n :small_orange_diamond: `!activity [&show_history 'number'] / [&set 'activity']` pour gérer mon activité,"
+            text += "\n :small_orange_diamond: `!hw &add/&rm/&show` pour gérer les devoirs, "
 
-            text += "\n :small_orange_diamond: `!int --add/--rm/--show ['@role'] [true/false] ['number']` pour gérer les points de int, "
+            text += "\n :small_orange_diamond: `!int &add/&rm/&show ['@role'] [true/false] ['number']` pour gérer les points de int, "
             text += "\n :small_orange_diamond: `!teams ['number'] ['@role']` pour faire des équipes avec les membres d'un rôle. "
     }
 

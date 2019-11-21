@@ -19,7 +19,7 @@ Abdessamad can answer to some messages in your conversations in order to make yo
 
 - `!help` to see the help menu
 - `ping` to play ping-pong with me
-- `!activity [--show_history 'number'] / [--set 'activity']` to manage my activity
-- `!hw --add / --show / --rm` to manage the homeworks
-- `!int --add / --show / --rm` to manage the int points
+- `!activity [&show_history 'number'] / [&set 'activity']` to manage my activity
+- `!hw &add / &show / &rm` to manage the homeworks
+- `!int &add / &show / &rm` to manage the int points
 - `!teams ['number'] ['@role']` to make random teams with the role's members
