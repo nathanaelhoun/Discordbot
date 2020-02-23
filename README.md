@@ -10,7 +10,7 @@ A bot built with JavaScript to interact with a Discord server. It was created to
 
 Abdessamad can answer to some messages in your conversations in order to make you laugh, but he also has some useful features.
 
-**This work is discontinued** since I have decided to rewrite the bot in Python
+**This work is discontinued** since I have decided to [rewrite the bot in Python](https://github.com/nathanaelhoun/Abpyssathon)
 
 ## Features
 
